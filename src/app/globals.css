@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-charcoal antialiased;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply border border-white/40 bg-white/70 shadow-soft backdrop-blur-xl;
+  }
+
+  .text-gradient-emerald {
+    @apply bg-gradient-to-r from-emerald to-emerald-light bg-clip-text text-transparent;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
