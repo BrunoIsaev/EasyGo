@@ -21,12 +21,13 @@ export function Footer() {
           >
             App Store — скоро
           </Link>
-          <Link
-            href="#"
-            className="rounded-pill border border-charcoal/20 px-8 py-4 text-sm font-semibold transition-colors hover:border-emerald hover:text-emerald"
-          >
-            Связаться с командой
-          </Link>
+          <div className="flex flex-col items-center gap-3 text-sm text-gray-600 mt-4">
+  <a href="https://t.me/EasyGo_Dag" target="_blank" className="hover:text-emerald-600 font-medium">Telegram: @EasyGo_Dag</a>
+  <a href="https://wa.me/79660057766" target="_blank" className="hover:text-emerald-600 font-medium">WhatsApp: +7 (966) 005-77-66</a>
+  <a href="tel:+79660057766" className="hover:text-emerald-600 font-medium">Телефон: +7 (966) 005-77-66</a>
+  <a href="mailto:bashir.isaev93@gmail.com" className="hover:text-emerald-600 font-medium">Email: bashir.isaev93@gmail.com</a>
+</div>
+
         </div>
 
         <p className="mt-12 text-xs text-charcoal-muted">
