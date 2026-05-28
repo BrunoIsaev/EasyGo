@@ -35,12 +35,15 @@ export function Footer() {
 
 
 
-          </div>
+            </div>
 
-  <p className="mt-12 text-xs text-charcoal-muted">
-    © {new Date().getFullYear()} EasyGo. Нейронавигатор по Дагестану.
-  </p>
+  <div className="flex justify-center mt-12 w-full">
+    <p className="text-xs text-charcoal-muted">
+      © {new Date().getFullYear()} EasyGo. Нейронавигатор по Дагестану.
+    </p>
+  </div>
 </footer>
 );
 }
+
 
