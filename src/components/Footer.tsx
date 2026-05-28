@@ -15,18 +15,25 @@ export function Footer() {
         </p>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link
-            href="#"
-            className="rounded-pill bg-emerald px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-light"
-          >
-            App Store — скоро
-          </Link>
-          <div className="flex flex-col items-center gap-3 text-sm text-gray-600 mt-4">
-  <a href="https://t.me/EasyGo_Dag" target="_blank" className="hover:text-emerald-600 font-medium">Telegram: @EasyGo_Dag</a>
-  <a href="https://wa.me/79660057766" target="_blank" className="hover:text-emerald-600 font-medium">WhatsApp: +7 (966) 005-77-66</a>
-  <a href="tel:+79660057766" className="hover:text-emerald-600 font-medium">Телефон: +7 (966) 005-77-66</a>
-  <a href="mailto:bashir.isaev93@gmail.com" className="hover:text-emerald-600 font-medium">Email: bashir.isaev93@gmail.com</a>
-</div>
+            {/* Блок с контактами и заголовком */}
+  <div className="flex flex-col items-center gap-2 mb-4">
+    <h3 className="font-semibold text-gray-900">Связаться с нами:</h3>
+    <div className="flex flex-col items-center gap-1 text-sm text-gray-600">
+      <a href="https://t.me/EasyGo_Dag" target="_blank" className="hover:text-emerald-600 font-medium">Telegram: @EasyGo_Dag</a>
+      <a href="https://wa.me/79660057766" target="_blank" className="hover:text-emerald-600 font-medium">WhatsApp: +7 (966) 005-77-66</a>
+      <a href="tel:+79660057766" className="hover:text-emerald-600 font-medium">Телефон: +7 (966) 005-77-66</a>
+      <a href="mailto:bashir.isaev93@gmail.com" className="hover:text-emerald-600 font-medium">Email: bashir.isaev93@gmail.com</a>
+    </div>
+  </div>
+
+  {/* Кнопка под контактами */}
+  <Link
+    href="#"
+    className="rounded-pill bg-emerald px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-light"
+  >
+    App Store — скоро
+  </Link>
+
 
         </div>
 
