@@ -9,7 +9,6 @@ const links = [
   { href: "#features", label: "Технологии" },
   { href: "#locations", label: "Локации" },
   { href: "#app", label: "Приложение" },
-  { href: "#impact", label: "Влияние" },
 ];
 
 export function Navbar() {
