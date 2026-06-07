@@ -67,3 +67,4 @@ export function Navbar() {
     </motion.header>
   );
 }
+// тестовый комментарий для перезапуска
