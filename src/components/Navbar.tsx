@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import Link from "next/link";
@@ -21,10 +22,17 @@ export function Navbar() {
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between rounded-card bg-white/80 px-5 py-3 shadow-soft backdrop-blur-xl">
         <Link href="#" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald text-sm font-bold text-white">
-            E
-          </span>
-          <span className="text-lg font-semibold tracking-tight">EasyGo</span>
+          <div className="flex items-baseline gap-0.5">
+            <Image
+              src="/logo-icon.png"
+              alt="EasyGo Logo"
+              width={28}
+              height={28}
+              className="h-7 w-7 object-contain"
+              priority
+            />
+            <span className="text-lg font-semibold tracking-tight">asyGo</span>
+          </div>
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">
