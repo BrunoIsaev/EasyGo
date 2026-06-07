@@ -24,7 +24,7 @@ export function Navbar() {
         <Link href="#" className="flex items-center gap-2">
           <div className="flex items-baseline gap-0.5">
             <Image
-              src="/logo-icon.png"
+              src="/logo-icon1.png"
               alt="EasyGo Logo"
               width={28}
               height={28}
