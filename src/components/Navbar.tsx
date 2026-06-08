@@ -6,10 +6,12 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 
 const links = [
-  { href: "#how-it-works", label: "Как работает" },
-  { href: "#features", label: "Технологии" },
-  { href: "#locations", label: "Локации" },
-  { href: "#app", label: "Приложение" },
+  { href: "#adventures", label: "Приключения и Активный отдых" },
+  { href: "#culture", label: "Культура и История" },
+  { href: "#gastronomy", label: "Гастрономические туры" },
+  { href: "#nature", label: "Природа и Фото-туры" },
+  { href: "#family", label: "Семейные путешествия" },
+  { href: "#relax", label: "Релакс и Оздоровление" },
 ];
 
 export function Navbar() {
