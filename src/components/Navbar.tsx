@@ -6,12 +6,12 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 
 // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
-// Заменили старые пункты меню на новые, утвержденные категории.
+// Все ссылки ведут на одну страницу /guide
 const links = [
-  { href: "/adventures", label: "Приключения" },
-  { href: "/culture", label: "Культура" },
-  { href: "/gastronomy", label: "Гастротуры" },
-  { href: "/family", label: "Для всей семьи" },
+  { href: "/guide", label: "Приключения" },
+  { href: "/guide", label: "Культура" },
+  { href: "/guide", label: "Гастротуры" },
+  { href: "/guide", label: "Для всей семьи" },
 ];
 // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
