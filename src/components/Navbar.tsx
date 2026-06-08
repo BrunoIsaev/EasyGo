@@ -5,12 +5,15 @@ import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 
+// --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
+// Заменили старые пункты меню на новые, утвержденные категории.
 const links = [
-  { href: "#how-it-works", label: "Как работает" },
-  { href: "#features", label: "Технологии" },
-  { href: "#locations", label: "Локации" },
-  { href: "#app", label: "Приложение" },
+  { href: "/adventures", label: "Приключения" },
+  { href: "/culture", label: "Культура" },
+  { href: "/gastronomy", label: "Гастротуры" },
+  { href: "/family", label: "Для всей семьи" },
 ];
+// --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
 export function Navbar() {
   return (
@@ -21,7 +24,7 @@ export function Navbar() {
       className="fixed left-0 right-0 top-0 z-50 px-4 py-4 md:px-8"
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between rounded-card bg-white/80 px-5 py-3 shadow-soft backdrop-blur-xl">
-        <Link href="#" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="flex items-baseline gap-0.5">
             <Image
               src="/logo-icon2.png"
@@ -49,8 +52,9 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-3">
+          {/* Ссылка на CTA была #cta, можно сделать ее ведущей на страницу приложения */}
           <Link
-            href="#cta"
+            href="/app" 
             className="hidden rounded-pill bg-emerald px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-light md:inline-block"
           >
             Скачать приложение
@@ -67,4 +71,3 @@ export function Navbar() {
     </motion.header>
   );
 }
-// тестовый комментарий для перезапуска
