@@ -6,12 +6,12 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 
 // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
-// Все ссылки ведут на одну страницу /guide
+// Обновлённые ссылки ведут на детальный вид раздела на /guide
 const links = [
-  { href: "/guide", label: "Приключения" },
-  { href: "/guide", label: "Культура" },
-  { href: "/guide", label: "Гастротуры" },
-  { href: "/guide", label: "Для всей семьи" },
+  { href: "/guide?section=adventures", label: "Приключения" },
+  { href: "/guide?section=culture", label: "Культура" },
+  { href: "/guide?section=gastronomy", label: "Гастротуры" },
+  { href: "/guide?section=family", label: "Для всей семьи" },
 ];
 // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
