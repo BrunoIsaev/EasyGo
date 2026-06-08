@@ -24,17 +24,16 @@ export function Navbar() {
       className="fixed left-0 right-0 top-0 z-50 px-4 py-4 md:px-8"
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between rounded-card bg-white/80 px-5 py-3 shadow-soft backdrop-blur-xl">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex items-baseline gap-0.5">
+        <Link href="/" className="flex items-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald/10 shadow-sm">
             <Image
               src="/logo-icon2.png"
-              alt="EasyGo Logo"
-              width={28}
-              height={28}
-              className="h-7 w-7 object-cover"
+              alt="EasyGo logo"
+              width={40}
+              height={40}
+              className="h-10 w-10 object-contain"
               priority
             />
-            <span className="text-lg font-semibold tracking-tight">EasyGo</span>
           </div>
         </Link>
 
