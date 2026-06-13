@@ -31,17 +31,16 @@ const GuidePage = () => {
     }
     
     setIsLoading(false); // Загрузка завершена
-  }, [router.isReady, router.query]); // Запускаем эффект, когда роутер готов
+  }, [router.isReady, router.query]);
 
   // Находим данные выбранного раздела
   const selectedSectionData = GUIDE_SECTIONS.find(
     (section) => section.id === selectedSectionId
   );
   
-  // --- ГЛАВНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ ---
   // Функция для возврата на ГЛАВНУЮ страницу сайта
   const handleGoBack = () => {
-    router.push('/'); // Эта команда всегда ведет на главную страницу
+    router.push('/'); // Эта команда всегда ведет на главную
   };
 
   // Пока идет определение раздела, показываем заглушку
@@ -52,7 +51,6 @@ const GuidePage = () => {
   // Функция для отображения детального вида
   const renderDetailView = (sectionData: Section) => (
     <div className={styles.detailContainer}>
-      {/* Эта кнопка теперь вызывает правильную функцию handleGoBack */}
       <button onClick={handleGoBack} className={styles.backButton}>
         &larr; Назад
       </button>
@@ -81,4 +79,33 @@ const GuidePage = () => {
       <h1 className={styles.mainTitle}>Гид по Дагестану</h1>
       <p className={styles.mainDescription}>
         Выберите интересующий вас раздел, чтобы увидеть подробности.
-      </p
+      </p>
+      <div className={styles.sectionGrid}>
+        {GUIDE_SECTIONS.map((section) => (
+          <div
+            key={section.id}
+            className={styles.sectionCard}
+            onClick={() => setSelectedSectionId(section.id)}
+          >
+            <h2 className={styles.sectionTitle}>{section.title}</h2>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+
+  return (
+    <>
+      <Head>
+        <title>
+          {selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo
+        </title>
+      </Head>
+      <main className={styles.container}>
+        {selectedSectionData ? renderDetailView(selectedSectionData) : renderGridView()}
+      </main>
+    </>
+  );
+}; // <-- ВОТ ЭТА СКОБКА БЫЛА ПРОПУЩЕНА
+
+export default GuidePage;
