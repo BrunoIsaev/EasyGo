@@ -6,7 +6,7 @@ import styles from '@/styles/GuidePage.module.css';
 
 const GuidePage = () => {
   const router = useRouter();
-  
+
   // Состояние для хранения ID выбранного раздела
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
   
@@ -38,11 +38,10 @@ const GuidePage = () => {
     (section) => section.id === selectedSectionId
   );
   
-  // Функция для возврата на страницу выбора
+  // --- ГЛАВНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ ---
+  // Функция для возврата на ГЛАВНУЮ страницу сайта
   const handleGoBack = () => {
-    setSelectedSectionId(null);
-    // Очищаем URL от параметра, чтобы при обновлении страницы не открывался раздел снова
-    router.push('/guide', undefined, { shallow: true });
+    router.push('/'); // Эта команда всегда ведет на главную страницу
   };
 
   // Пока идет определение раздела, показываем заглушку
@@ -53,8 +52,9 @@ const GuidePage = () => {
   // Функция для отображения детального вида
   const renderDetailView = (sectionData: Section) => (
     <div className={styles.detailContainer}>
+      {/* Эта кнопка теперь вызывает правильную функцию handleGoBack */}
       <button onClick={handleGoBack} className={styles.backButton}>
-        &larr; Назад ко всем разделам
+        &larr; Назад
       </button>
       <h1 className={styles.mainTitle}>{sectionData.title}</h1>
       <div className={styles.cardsGrid}>
@@ -81,33 +81,4 @@ const GuidePage = () => {
       <h1 className={styles.mainTitle}>Гид по Дагестану</h1>
       <p className={styles.mainDescription}>
         Выберите интересующий вас раздел, чтобы увидеть подробности.
-      </p>
-      <div className={styles.sectionGrid}>
-        {GUIDE_SECTIONS.map((section) => (
-          <div
-            key={section.id}
-            className={styles.sectionCard}
-            onClick={() => setSelectedSectionId(section.id)}
-          >
-            <h2 className={styles.sectionTitle}>{section.title}</h2>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-
-  return (
-    <>
-      <Head>
-        <title>
-          {selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo
-        </title>
-      </Head>
-      <main className={styles.container}>
-        {selectedSectionData ? renderDetailView(selectedSectionData) : renderGridView()}
-      </main>
-    </>
-  );
-};
-
-export default GuidePage;
+      </p
