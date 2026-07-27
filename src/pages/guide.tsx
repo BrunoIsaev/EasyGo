@@ -55,31 +55,41 @@ const GuidePage = () => {
       <button onClick={handleGoBack} className={styles.backButton}>
         &larr; Назад
       </button>
+
       {sectionData.image && (
-        <Image
-          src={sectionData.image}
-          alt={sectionData.title}
-          width={1200}
-          height={360}
-          className="mb-6 w-full rounded-2xl object-cover"
-          style={{ height: 360 }}
-        />
-      )}
-      <h1 className={styles.mainTitle}>{sectionData.title}</h1>
-      <div className={styles.cardsGrid}>
-        {sectionData.cards.map((card) => (
-          <div key={card.id} className={styles.card}>
-            <h2 className={styles.cardTitle}>{card.title}</h2>
-            <p className={styles.cardShortDescription}>{card.shortDescription}</p>
-            <hr className={styles.cardDivider} />
-            <p className={styles.cardFullDescription}>{card.fullDescription}</p>
-            {card.keyLocations && (
-              <div className={styles.cardLocations}>
-                <strong>Ключевые места:</strong> {card.keyLocations.join(', ')}
-              </div>
-            )}
+        <div className="relative mb-8 min-h-[80vh] w-full overflow-hidden rounded-[32px] bg-black">
+          <Image
+            src={sectionData.image}
+            alt={sectionData.title}
+            fill
+            priority={true}
+            className="absolute inset-0 object-cover"
+          />
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative z-10 flex min-h-[80vh] items-center justify-center px-6 text-center">
+            <h1 className="text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
+              {sectionData.title}
+            </h1>
           </div>
-        ))}
+        </div>
+      )}
+
+      <div className="rounded-[24px] bg-white px-4 py-6 shadow-sm sm:px-6">
+        <div className={styles.cardsGrid}>
+          {sectionData.cards.map((card) => (
+            <div key={card.id} className={styles.card}>
+              <h2 className={styles.cardTitle}>{card.title}</h2>
+              <p className={styles.cardShortDescription}>{card.shortDescription}</p>
+              <hr className={styles.cardDivider} />
+              <p className={styles.cardFullDescription}>{card.fullDescription}</p>
+              {card.keyLocations && (
+                <div className={styles.cardLocations}>
+                  <strong>Ключевые места:</strong> {card.keyLocations.join(', ')}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
