@@ -50,48 +50,76 @@ const GuidePage = () => {
   }
 
   // Функция для отображения детального вида
-  const renderDetailView = (sectionData: Section) => (
-    <div className="relative min-h-screen">
-      {sectionData.image && (
-        <Image
-          src={sectionData.image}
-          alt={sectionData.title}
-          fill
-          priority
-          className="object-cover"
-        />
-      )}
+  const renderDetailView = (sectionData: Section) => {
+    return (
+      <div className="relative min-h-screen w-full">
+        {sectionData.image && (
+          <Image
+            src={sectionData.image}
+            alt={sectionData.title}
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        )}
 
-      <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
 
-      <div className="relative z-10 px-6 py-12 text-white md:px-12">
-        <button onClick={handleGoBack} className="mb-8 text-white/80 hover:text-white">
-          ← Назад
-        </button>
-
-        <h1 className="mb-12 text-4xl font-bold md:text-6xl">
-          {sectionData.title}
-        </h1>
-
-        {sectionData.cards.map((card) => (
-          <div
-            key={card.id}
-            className="mb-8 rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm"
+        <div className="relative z-10 min-h-screen overflow-y-auto px-6 py-12 text-white md:px-12">
+          <button
+            onClick={handleGoBack}
+            className="mb-8 flex items-center gap-2 text-white/80 transition-colors hover:text-white"
           >
-            <h2 className="mb-3 text-2xl font-bold">{card.title}</h2>
-            <p className="mb-4 text-white/90">{card.shortDescription}</p>
-            <p className="text-sm leading-relaxed text-white/70">{card.fullDescription}</p>
-            {card.keyLocations && (
-              <div className="mt-4 border-t border-white/20 pt-4">
-                <span className="text-sm font-medium text-white/60">Ключевые места: </span>
-                <span className="text-sm text-white/80">{card.keyLocations.join(', ')}</span>
+            ← Назад
+          </button>
+
+          <h1 className="mb-12 text-4xl font-bold leading-tight md:text-6xl">
+            {sectionData.title}
+          </h1>
+
+          <div className="max-w-4xl space-y-8">
+            {sectionData.cards.map((card) => (
+              <div
+                key={card.id}
+                className="rounded-2xl border border-white/20 bg-white/10 p-6 shadow-lg backdrop-blur-md md:p-8"
+              >
+                <h2 className="mb-4 text-2xl font-bold text-white md:text-3xl">
+                  {card.title}
+                </h2>
+                <p className="mb-4 text-lg leading-relaxed text-white/90">
+                  {card.shortDescription}
+                </p>
+                <p className="mb-4 text-base leading-relaxed text-white/70">
+                  {card.fullDescription}
+                </p>
+                {card.keyLocations && card.keyLocations.length > 0 && (
+                  <div className="mt-6 border-t border-white/20 pt-4">
+                    <span className="text-sm font-semibold uppercase tracking-wide text-white/50">
+                      Ключевые места:{' '}
+                    </span>
+                    <p className="mt-1 text-sm text-white/80">
+                      {card.keyLocations.join(', ')}
+                    </p>
+                  </div>
+                )}
+                {card.photoIdea && (
+                  <div className="mt-4 border-t border-white/20 pt-4">
+                    <span className="text-sm font-semibold uppercase tracking-wide text-white/50">
+                      Идея для фото:{' '}
+                    </span>
+                    <p className="mt-1 text-sm italic text-white/70">
+                      {card.photoIdea}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Функция для отображения сетки с разделами
   const renderGridView = () => (
