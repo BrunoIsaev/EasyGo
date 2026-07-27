@@ -55,6 +55,16 @@ const GuidePage = () => {
       <button onClick={handleGoBack} className={styles.backButton}>
         &larr; Назад
       </button>
+      {sectionData.image && (
+        <Image
+          src={sectionData.image}
+          alt={sectionData.title}
+          width={1200}
+          height={360}
+          className="mb-6 w-full rounded-2xl object-cover"
+          style={{ height: 360 }}
+        />
+      )}
       <h1 className={styles.mainTitle}>{sectionData.title}</h1>
       <div className={styles.cardsGrid}>
         {sectionData.cards.map((card) => (
