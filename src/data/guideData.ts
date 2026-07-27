@@ -18,7 +18,7 @@ export const GUIDE_SECTIONS: Section[] = [
   {
     id: "adventures",
     title: "Приключения",
-    image: "/images/adventure.jpg",
+    image: "/adventure.jpg",
     cards: [
       {
         id: "adv1",
@@ -60,7 +60,7 @@ export const GUIDE_SECTIONS: Section[] = [
   {
     id: "culture",
     title: "Культура",
-    image: "/images/culture.jpg",
+    image: "/culture.jpg",
     cards: [
       {
         id: "cult1",
