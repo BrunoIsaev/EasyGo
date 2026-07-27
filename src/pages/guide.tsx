@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { GUIDE_SECTIONS, Section } from '@/data/guideData';
@@ -87,6 +88,15 @@ const GuidePage = () => {
             className={styles.sectionCard}
             onClick={() => setSelectedSectionId(section.id)}
           >
+            {section.image && (
+              <Image
+                src={section.image}
+                alt={section.title}
+                width={400}
+                height={200}
+                className="mb-4 h-48 w-full rounded-xl object-cover"
+              />
+            )}
             <h2 className={styles.sectionTitle}>{section.title}</h2>
           </div>
         ))}

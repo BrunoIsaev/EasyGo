@@ -11,12 +11,14 @@ export interface Section {
   id: string;
   title: string;
   cards: Card[];
+  image?: string;
 }
 
 export const GUIDE_SECTIONS: Section[] = [
   {
     id: "adventures",
     title: "Приключения",
+    image: "/images/adventure.jpg",
     cards: [
       {
         id: "adv1",
@@ -58,6 +60,7 @@ export const GUIDE_SECTIONS: Section[] = [
   {
     id: "culture",
     title: "Культура",
+    image: "/images/culture.jpg",
     cards: [
       {
         id: "cult1",
