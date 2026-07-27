@@ -94,7 +94,8 @@ const GuidePage = () => {
                 alt={section.title}
                 width={400}
                 height={200}
-                className="mb-4 h-48 w-full rounded-xl object-cover"
+                className="mb-4 w-full rounded-t-xl object-cover"
+                style={{ height: 200 }}
               />
             )}
             <h2 className={styles.sectionTitle}>{section.title}</h2>
