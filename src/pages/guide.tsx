@@ -57,7 +57,7 @@ const GuidePage = () => {
       </button>
 
       {sectionData.image && (
-        <div className="relative mb-8 min-h-[80vh] w-full overflow-hidden rounded-[32px] bg-black">
+        <div className="relative h-screen w-full overflow-hidden rounded-[32px] bg-black">
           <Image
             src={sectionData.image}
             alt={sectionData.title}
@@ -65,32 +65,32 @@ const GuidePage = () => {
             priority={true}
             className="absolute inset-0 object-cover"
           />
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative z-10 flex min-h-[80vh] items-center justify-center px-6 text-center">
-            <h1 className="text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="relative z-10 h-full overflow-y-auto p-8 text-white">
+            <h1 className="mb-8 text-4xl font-bold sm:text-5xl lg:text-6xl">
               {sectionData.title}
             </h1>
+            <div className="grid gap-6 md:grid-cols-2">
+              {sectionData.cards.map((card) => (
+                <div
+                  key={card.id}
+                  className="rounded-[24px] border border-white/20 bg-white/90 p-6 text-slate-900 shadow-xl backdrop-blur"
+                >
+                  <h2 className={styles.cardTitle}>{card.title}</h2>
+                  <p className={styles.cardShortDescription}>{card.shortDescription}</p>
+                  <hr className={styles.cardDivider} />
+                  <p className={styles.cardFullDescription}>{card.fullDescription}</p>
+                  {card.keyLocations && (
+                    <div className={styles.cardLocations}>
+                      <strong>Ключевые места:</strong> {card.keyLocations.join(', ')}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
-
-      <div className="rounded-[24px] bg-white px-4 py-6 shadow-sm sm:px-6">
-        <div className={styles.cardsGrid}>
-          {sectionData.cards.map((card) => (
-            <div key={card.id} className={styles.card}>
-              <h2 className={styles.cardTitle}>{card.title}</h2>
-              <p className={styles.cardShortDescription}>{card.shortDescription}</p>
-              <hr className={styles.cardDivider} />
-              <p className={styles.cardFullDescription}>{card.fullDescription}</p>
-              {card.keyLocations && (
-                <div className={styles.cardLocations}>
-                  <strong>Ключевые места:</strong> {card.keyLocations.join(', ')}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 
