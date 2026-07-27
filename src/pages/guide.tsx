@@ -51,46 +51,45 @@ const GuidePage = () => {
 
   // Функция для отображения детального вида
   const renderDetailView = (sectionData: Section) => (
-    <div className={styles.detailContainer}>
-      <button onClick={handleGoBack} className={styles.backButton}>
-        &larr; Назад
-      </button>
-
+    <div className="relative min-h-screen">
       {sectionData.image && (
-        <div className="relative h-screen w-full overflow-hidden rounded-[32px] bg-black">
-          <Image
-            src={sectionData.image}
-            alt={sectionData.title}
-            fill
-            priority={true}
-            className="absolute inset-0 object-cover"
-          />
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 h-full overflow-y-auto p-8 text-white">
-            <h1 className="mb-8 text-4xl font-bold sm:text-5xl lg:text-6xl">
-              {sectionData.title}
-            </h1>
-            <div className="grid gap-6 md:grid-cols-2">
-              {sectionData.cards.map((card) => (
-                <div
-                  key={card.id}
-                  className="rounded-[24px] border border-white/20 bg-white/90 p-6 text-slate-900 shadow-xl backdrop-blur"
-                >
-                  <h2 className={styles.cardTitle}>{card.title}</h2>
-                  <p className={styles.cardShortDescription}>{card.shortDescription}</p>
-                  <hr className={styles.cardDivider} />
-                  <p className={styles.cardFullDescription}>{card.fullDescription}</p>
-                  {card.keyLocations && (
-                    <div className={styles.cardLocations}>
-                      <strong>Ключевые места:</strong> {card.keyLocations.join(', ')}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <Image
+          src={sectionData.image}
+          alt={sectionData.title}
+          fill
+          priority
+          className="object-cover"
+        />
       )}
+
+      <div className="absolute inset-0 bg-black/60" />
+
+      <div className="relative z-10 px-6 py-12 text-white md:px-12">
+        <button onClick={handleGoBack} className="mb-8 text-white/80 hover:text-white">
+          ← Назад
+        </button>
+
+        <h1 className="mb-12 text-4xl font-bold md:text-6xl">
+          {sectionData.title}
+        </h1>
+
+        {sectionData.cards.map((card) => (
+          <div
+            key={card.id}
+            className="mb-8 rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm"
+          >
+            <h2 className="mb-3 text-2xl font-bold">{card.title}</h2>
+            <p className="mb-4 text-white/90">{card.shortDescription}</p>
+            <p className="text-sm leading-relaxed text-white/70">{card.fullDescription}</p>
+            {card.keyLocations && (
+              <div className="mt-4 border-t border-white/20 pt-4">
+                <span className="text-sm font-medium text-white/60">Ключевые места: </span>
+                <span className="text-sm text-white/80">{card.keyLocations.join(', ')}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 
