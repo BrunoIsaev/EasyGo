@@ -63,7 +63,7 @@ export function Hero() {
             />
             <input
               type="search"
-              placeholder="Куда отправимся сегодня?"
+              placeholder="Куда отправимся?"
               className="w-full bg-transparent text-base text-charcoal outline-none placeholder:text-charcoal-muted/70"
             />
             <button
