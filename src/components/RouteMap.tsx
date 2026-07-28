@@ -20,121 +20,120 @@ export default function RouteMap({ route }: RouteMapProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!mapRef.current || !route.days.length) {
+    if (!mapRef.current || !route.days.length) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    // Собираем все координаты
+    const allCoords: [number, number][] = [];
+    route.days.forEach(day => {
+      day.spots.forEach(spot => {
+        allCoords.push(spot.coords);
+      });
+    });
+
+    if (allCoords.length === 0) {
+      setError('Нет точек для отображения');
       setIsLoading(false);
-      setError('Маршрут не найден');
       return;
     }
 
-    let cancelled = false;
-    let scriptTag: HTMLScriptElement | null = null;
-
-    const finishWithError = (message: string) => {
-      if (!cancelled) {
-        setIsLoading(false);
-        setError(message);
-      }
-    };
-
-    const initMap = async () => {
-      if (!mapRef.current || cancelled) return;
-
-      const allCoords: [number, number][] = [];
-      route.days.forEach((day) => {
-        day.spots.forEach((spot) => {
-          allCoords.push(spot.coords);
-        });
-      });
-
-      if (allCoords.length === 0) {
-        finishWithError('Нет точек для построения маршрута');
-        return;
-      }
-
+    const initMap = () => {
       try {
+        if (!window.ymaps) {
+          setError('API Яндекс.Карт не загрузился');
+          setIsLoading(false);
+          return;
+        }
+
+        // Создаем карту
         const myMap = new window.ymaps.Map(mapRef.current, {
           center: allCoords[0],
           zoom: 10,
           controls: ['zoomControl']
         });
 
-        route.days.forEach((day) => {
-          day.spots.forEach((spot) => {
-            const placemark = new window.ymaps.Placemark(spot.coords, {
-              balloonContent: `<strong>${spot.name}</strong><br>${day.title}`
-            });
+        // Добавляем метки
+        let spotIndex = 1;
+        route.days.forEach(day => {
+          day.spots.forEach(spot => {
+            const placemark = new window.ymaps.Placemark(
+              spot.coords,
+              {
+                balloonContent: `<strong>${spot.name}</strong><br>${day.title}`,
+                iconContent: String(spotIndex++)
+              },
+              {
+                preset: 'islands#greenCircleDotIconWithCaption'
+              }
+            );
             myMap.geoObjects.add(placemark);
           });
         });
 
-        try {
-          const multiRoute = await window.ymaps.route(allCoords, {
-            wayPointManager: 'driving'
+        // Пытаемся построить маршрут по дорогам
+        window.ymaps.route(allCoords, {
+          mapStateAutoApply: true,
+          routingMode: 'auto'
+        }).then(function (routeObj: any) {
+          myMap.geoObjects.add(routeObj);
+          
+          // Стилізуем линию маршрута
+          routeObj.getPaths().each(function (path: any) {
+            path.options.set({
+              strokeColor: '#006633',
+              strokeWidth: 5,
+              strokeOpacity: 0.8
+            });
           });
-
-          myMap.geoObjects.add(multiRoute);
-          myMap.setBounds(multiRoute.getBounds(), { checkZoomRange: true, zoomMargin: 50 });
-        } catch {
-          const fallbackLine = new window.ymaps.Polyline(allCoords, {}, {
+          
+          setIsLoading(false);
+        }).catch(function (err: any) {
+          console.warn('Маршрутизация не удалась, используем прямую линию:', err);
+          // Fallback: рисуем прямую линию
+          const polyline = new window.ymaps.Polyline(allCoords, {}, {
             strokeColor: '#006633',
             strokeWidth: 4,
             strokeOpacity: 0.8
           });
-          myMap.geoObjects.add(fallbackLine);
-          myMap.setBounds(myMap.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 50 });
-        }
-
-        if (!cancelled) {
+          myMap.geoObjects.add(polyline);
+          myMap.setBounds(myMap.geoObjects.getBounds(), { 
+            checkZoomRange: true, 
+            zoomMargin: 50 
+          });
           setIsLoading(false);
-          setError(null);
-        }
-      } catch (err) {
-        finishWithError('Не удалось инициализировать карту');
+        });
+
+      } catch (err: any) {
+        console.error('Ошибка инициализации карты:', err);
+        setError(`Ошибка: ${err.message || 'Неизвестная ошибка'}`);
+        setIsLoading(false);
       }
     };
 
-    const loadMap = () => {
-      if (window.ymaps) {
-        void initMap();
-        return;
-      }
-
-      const existingScript = document.querySelector('script[src*="api-maps.yandex.ru/2.1"]') as HTMLScriptElement | null;
-      if (existingScript) {
-        existingScript.addEventListener('load', () => {
-          void initMap();
-        });
-        existingScript.addEventListener('error', () => {
-          finishWithError('Не удалось загрузить Яндекс Карты');
-        });
-        scriptTag = existingScript;
-        return;
-      }
-
-      scriptTag = document.createElement('script');
-      scriptTag.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`;
-      scriptTag.async = true;
-      scriptTag.onload = () => {
-        void initMap();
+    // Загружаем скрипт Яндекса
+    if (window.ymaps) {
+      initMap();
+    } else {
+      const script = document.createElement('script');
+      script.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`;
+      script.onload = initMap;
+      script.onerror = () => {
+        setError('Не удалось загрузить API Яндекс.Карт');
+        setIsLoading(false);
       };
-      scriptTag.onerror = () => {
-        finishWithError('Не удалось загрузить Яндекс Карты');
-      };
-      document.head.appendChild(scriptTag);
-    };
+      document.head.appendChild(script);
+    }
 
-    loadMap();
-
+    // Очистка при размонтировании
     return () => {
-      cancelled = true;
-      if (scriptTag && scriptTag.parentNode) {
-        scriptTag.parentNode.removeChild(scriptTag);
-      }
+      // Можно добавить очистку карты если нужно
     };
   }, [route]);
 
   return (
-    <div key={route.id} className="relative mt-8 h-[400px] w-full overflow-hidden rounded-3xl border border-gray-200 bg-gray-50 shadow-xl">
+    <div key={route.id} className="relative mt-8 h-[400px] w-full overflow-hidden rounded-3xl border border-gray-200 bg-gray-50">
       {isLoading && !error ? (
         <div className="flex h-full items-center justify-center bg-gray-100 text-sm font-medium text-gray-600">
           Загрузка карты...
@@ -142,12 +141,15 @@ export default function RouteMap({ route }: RouteMapProps) {
       ) : null}
 
       {error && !isLoading ? (
-        <div className="flex h-full items-center justify-center bg-gray-100 px-4 text-center text-sm font-medium text-red-600">
+        <div className="flex h-full items-center justify-center bg-red-50 px-4 text-center text-sm font-medium text-red-600">
           {error}
         </div>
       ) : null}
 
-      <div ref={mapRef} className={`h-full w-full ${isLoading ? 'hidden' : 'block'}`} />
+      <div 
+        ref={mapRef} 
+        className={`h-full w-full ${isLoading || error ? 'hidden' : 'block'}`} 
+      />
 
       <div className="absolute left-4 top-4 z-10 rounded-xl bg-white/90 px-4 py-2 text-sm font-medium text-gray-800 shadow-sm backdrop-blur">
         🗺️ Маршрут: {route.title}
