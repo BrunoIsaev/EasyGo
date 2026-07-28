@@ -137,7 +137,7 @@ export function Hero() {
                   </div>
                 ) : (
                   <div className="p-8 text-center text-gray-500">
-                    <p>Ничего не найдено по запросу «{query}»</p>
+                    <p>Ничего не найдено по запросу "{query}"</p>
                     <p className="text-sm mt-2 text-gray-400">Попробуйте: "вино", "горы", "семья"</p>
                   </div>
                 )}
