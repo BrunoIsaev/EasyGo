@@ -4,13 +4,15 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Search, Thermometer, X } from "lucide-react";
-import { TOUR_ROUTES } from '@/data/routes'; // Импортируем наши маршруты
+import { TOUR_ROUTES, TourRoute } from '@/data/routes';
+import RouteMap from './RouteMap'; // Импортируем наши маршруты
 
 const HERO_TAGS = ["Места притяжения", "Горы", "Древние аулы", "Этно-туры"] as const;
 
 export function Hero() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState<TourRoute | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Логика поиска: фильтруем маршруты по запросу
@@ -114,7 +116,11 @@ export function Hero() {
                       Найденные маршруты
                     </div>
                     {results.map((route) => (
-                      <div key={route.id} className="group px-4 py-3 hover:bg-emerald-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0">
+                      <div
+                        key={route.id}
+                        onClick={() => setSelectedRoute(route)}
+                        className="group px-4 py-3 hover:bg-emerald-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+                      >
                         <div className="flex items-start justify-between gap-4">
                           <div>
                             <h3 className="font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">
@@ -139,6 +145,11 @@ export function Hero() {
                   <div className="p-8 text-center text-gray-500">
                     <p>Ничего не найдено по запросу &quot;{query}&quot;</p>
                     <p className="text-sm mt-2 text-gray-400">Попробуйте: &apos;вино&apos;, &apos;горы&apos;, &apos;семья&apos;</p>
+                  </div>
+                )}
+                {selectedRoute && (
+                  <div className="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <RouteMap route={selectedRoute} />
                   </div>
                 )}
               </div>
