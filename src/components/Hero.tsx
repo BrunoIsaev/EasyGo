@@ -51,7 +51,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white" />
       </div>
 
-      <div className="relative mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20">
+      <div className={`relative mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20 ${isOpen && query ? "md:pb-[600px] pb-[400px]" : ""}`}>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -107,7 +107,7 @@ export function Hero() {
 
             {/* ВЫПАДАЮЩИЙ СПИСОК РЕЗУЛЬТАТОВ */}
             {isOpen && query && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl z-50 max-h-[60vh] overflow-y-auto border border-gray-100">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl z-[100] max-h-[60vh] overflow-y-auto border border-gray-100">
                 {results.length > 0 ? (
                   <div className="py-2">
                     <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-50 mb-1">
