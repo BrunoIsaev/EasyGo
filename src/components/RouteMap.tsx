@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
+import { Location } from '@/data/locations';
 import { TourRoute } from '@/data/routes';
 
 declare global {
@@ -9,7 +10,8 @@ declare global {
 }
 
 interface RouteMapProps {
-  route: TourRoute;
+  route?: TourRoute;
+  singleLocation?: Location;
 }
 
 const API_KEY = '40ddd60f-2616-4af7-9ac9-c2042fc9983b';
@@ -29,14 +31,66 @@ const WAYPOINTS: Record<string, [number, number]> = {
   'mamadkala': [42.1150, 48.1850]   // Мамедкала
 };
 
-export default function RouteMap({ route }: RouteMapProps) {
+export default function RouteMap({ route, singleLocation }: RouteMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready'>('loading');
 
   useEffect(() => {
-    if (!mapRef.current || !route.days.length) return;
+    if (!mapRef.current) return;
 
     setStatus('loading');
+
+    const initSingleLocationMap = () => {
+      try {
+        if (!window.ymaps || !window.ymaps.Map) {
+          console.error('Yandex Maps API not loaded');
+          setStatus('ready');
+          return;
+        }
+
+        const map = new window.ymaps.Map(mapRef.current, {
+          center: singleLocation!.coords,
+          zoom: 14,
+          controls: ['zoomControl']
+        });
+
+        const placemark = new window.ymaps.Placemark(
+          singleLocation!.coords,
+          {
+            balloonContent: `<strong>${singleLocation!.name}</strong>`
+          },
+          {
+            preset: 'islands#greenDotIconWithCaption'
+          }
+        );
+
+        map.geoObjects.add(placemark);
+        map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 20 });
+        setStatus('ready');
+      } catch (err: any) {
+        console.error('Single location map init error:', err);
+        setStatus('ready');
+      }
+    };
+
+    if (singleLocation && !route) {
+      if (window.ymaps && window.ymaps.Map) {
+        initSingleLocationMap();
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://api-maps.yandex.ru/2.1/?apikey=' + API_KEY + '&lang=ru_RU';
+        script.type = 'text/javascript';
+        script.onload = () => { window.ymaps.ready(initSingleLocationMap); };
+        script.onerror = () => { console.error('Failed to load Yandex Maps'); setStatus('ready'); };
+        document.head.appendChild(script);
+      }
+      return;
+    }
+
+    if (!route?.days?.length) {
+      setStatus('ready');
+      return;
+    }
 
     // Собираем основные точки маршрута
     const mainPoints: [number, number][] = [];
@@ -154,10 +208,10 @@ export default function RouteMap({ route }: RouteMapProps) {
       document.head.appendChild(script);
     }
 
-  }, [route.id]);
+  }, [route?.id, singleLocation?.id]);
 
   return (
-    <div key={route.id} className="relative mt-8 h-[400px] w-full overflow-hidden rounded-3xl border border-gray-200 bg-gray-50">
+    <div key={route?.id ?? singleLocation?.id ?? 'map'} className="relative mt-8 h-[400px] w-full overflow-hidden rounded-3xl border border-gray-200 bg-gray-50">
       {status === 'loading' && (
         <div className="flex h-full items-center justify-center bg-gray-100 text-gray-500 animate-pulse">
           Прокладываем маршрут...
@@ -168,7 +222,7 @@ export default function RouteMap({ route }: RouteMapProps) {
       
       {status === 'ready' && (
         <div className="absolute left-4 top-4 z-10 rounded-xl bg-white/90 px-4 py-2 text-sm font-medium text-gray-800 shadow-sm backdrop-blur pointer-events-none">
-          Map: {route.title}
+          Map: {route?.title ?? singleLocation?.name ?? 'Location'}
         </div>
       )}
     </div>
