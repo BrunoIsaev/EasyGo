@@ -11,7 +11,7 @@ declare global {
 
 interface RouteMapProps {
   route?: TourRoute;
-  singleLocation?: Location | null;
+  singleLocation?: any;
 }
 
 const API_KEY = '40ddd60f-2616-4af7-9ac9-c2042fc9983b';

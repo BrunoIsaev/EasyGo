@@ -13,7 +13,7 @@ export function Hero() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState<TourRoute | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Логика поиска: фильтруем маршруты по запросу
