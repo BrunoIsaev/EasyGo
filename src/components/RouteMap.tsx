@@ -1,4 +1,4 @@
-\"use client\";
+"use client";
 import React, { useEffect, useRef, useState } from 'react';
 import { TourRoute } from '@/data/routes';
 
@@ -23,7 +23,6 @@ export default function RouteMap({ route }: RouteMapProps) {
 
     setStatus('loading');
 
-    // Собираем все координаты точек маршрута
     const points: [number, number][] = [];
     route.days.forEach(day => {
       day.spots.forEach(spot => points.push(spot.coords));
@@ -42,14 +41,12 @@ export default function RouteMap({ route }: RouteMapProps) {
           return;
         }
 
-        // Создаем карту
         const map = new window.ymaps.Map(mapRef.current, {
           center: points[0],
           zoom: 9,
           controls: ['zoomControl']
         });
 
-        // Добавляем метки
         let spotIndex = 1;
         route.days.forEach(day => {
           day.spots.forEach(spot => {
@@ -67,15 +64,12 @@ export default function RouteMap({ route }: RouteMapProps) {
           });
         });
 
-        // Пытаемся построить маршрут ПО ДОРОГАМ
         window.ymaps.route(points, { 
           routingMode: 'auto',
           mapStateAutoApply: true 
         })
         .then((routeObj: any) => {
           map.geoObjects.add(routeObj);
-          
-          // Стилізуем линию маршрута
           routeObj.getPaths().each((path: any) => {
             path.options.set({
               strokeColor: '#006633',
@@ -83,8 +77,6 @@ export default function RouteMap({ route }: RouteMapProps) {
               strokeOpacity: 0.9
             });
           });
-
-          // Масштабируем карту под весь маршрут
           map.setBounds(map.geoObjects.getBounds(), { 
             checkZoomRange: true, 
             zoomMargin: 60 
@@ -92,39 +84,30 @@ export default function RouteMap({ route }: RouteMapProps) {
           setStatus('ready');
         })
         .catch((err: any) => {
-          console.warn('Маршрутизация по дорогам не удалась, рисуем кривую:', err);
+          console.warn('Road routing failed, drawing curve:', err);
           
-          // FALLBACK: Рисуем кривую Безье вместо прямой линии
           const curvePoints: [number, number][] = [];
           for (let i = 0; i < points.length - 1; i++) {
             const p1 = points[i];
             const p2 = points[i + 1];
-            
-            // Добавляем начальную точку
             curvePoints.push(p1);
             
-            // Добавляем контрольную точку для изгиба
             const midLat = (p1[0] + p2[0]) / 2;
             const midLng = (p1[1] + p2[1]) / 2;
-            
-            // Вычисляем смещение для изгиба
             const distLat = p2[0] - p1[0];
             const distLng = p2[1] - p1[1];
-            
-            // Смещаем контрольную точку "в сторону" от прямой
             const offsetLat = -distLng * 0.2; 
             const offsetLng = distLat * 0.2;
             
             curvePoints.push([midLat + offsetLat, midLng + offsetLng]);
           }
-          // Добавляем последнюю точку
           curvePoints.push(points[points.length - 1]);
 
           const curvedLine = new window.ymaps.Polyline(curvePoints, {}, {
             strokeColor: '#006633',
             strokeWidth: 4,
             strokeOpacity: 0.7,
-            strokeStyle: 'dash' // Пунктир, чтобы показать что это приблизительный путь
+            strokeStyle: 'dash'
           });
           
           map.geoObjects.add(curvedLine);
@@ -136,12 +119,11 @@ export default function RouteMap({ route }: RouteMapProps) {
         });
 
       } catch (err: any) {
-        console.error('Ошибка инициализации карты:', err);
+        console.error('Map init error:', err);
         setStatus('ready');
       }
     };
 
-    // Загружаем скрипт Яндекса
     if (window.ymaps && window.ymaps.Map) {
       initMap();
     } else {
@@ -152,13 +134,13 @@ export default function RouteMap({ route }: RouteMapProps) {
         window.ymaps.ready(initMap);
       };
       script.onerror = () => {
-        console.error('Failed to load Yandex Maps script');
+        console.error('Failed to load Yandex Maps');
         setStatus('ready');
       };
       document.head.appendChild(script);
     }
 
-  }, [route.id]); // Перезапуск при смене маршрута
+  }, [route.id]);
 
   return (
     <div key={route.id} className="relative mt-8 h-[400px] w-full overflow-hidden rounded-3xl border border-gray-200 bg-gray-50">
@@ -172,7 +154,7 @@ export default function RouteMap({ route }: RouteMapProps) {
       
       {status === 'ready' && (
         <div className="absolute left-4 top-4 z-10 rounded-xl bg-white/90 px-4 py-2 text-sm font-medium text-gray-800 shadow-sm backdrop-blur pointer-events-none">
-          🗺️ {route.title}
+          Map: {route.title}
         </div>
       )}
     </div>
