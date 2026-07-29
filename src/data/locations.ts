@@ -2,14 +2,14 @@ export interface Location {
   id: string;
   name: string;
   coords: [number, number];
-  type: 'beach' | 'landmark' | 'winery' | 'nature' | 'history' | 'extreme';
+  type: 'beach' | 'landmark' | 'winery' | 'nature' | 'history' | 'extreme' | 'restaurant' | 'cave';
   description?: string;
-  city?: string; // Для группировки (Махачкала, Дербент и т.д.)
+  city?: string;
 }
 
 export const ALL_LOCATIONS: Location[] = [
-  // --- ПЛЯЖИ (Отдельные точки) ---
-  { id: 'beach-black-stones', name: 'Пляж Черные камни', coords: [43.032772, 47.461602], type: 'beach', city: 'Махачкала', description: 'Дикий пляж с черной галькой' },
+  // --- ПЛЯЖИ ---
+  { id: 'beach-black-stones', name: 'Пляж Черные камни', coords: [43.032772, 47.461602], type: 'beach', city: 'Махачкала' },
   { id: 'beach-berezka', name: 'Пляж Березка', coords: [42.997752, 47.478247], type: 'beach', city: 'Махачкала' },
   { id: 'beach-makh-city', name: 'Городской пляж (Махачкала)', coords: [42.986806, 47.511080], type: 'beach', city: 'Махачкала' },
   { id: 'beach-korall', name: 'Пляж Коралл', coords: [42.962373, 47.558654], type: 'beach', city: 'Махачкала' },
@@ -33,8 +33,11 @@ export const ALL_LOCATIONS: Location[] = [
 
   // --- ДОСТОПРИМЕЧАТЕЛЬНОСТИ И ЛОКАЦИИ ---
   { id: 'sulak-dubki', name: 'Сулакский каньон (Дубки)', coords: [43.023323, 46.826067], type: 'nature', description: 'Главная смотровая площадка' },
-  { id: 'glavryba', name: 'Главрыба (Зиплайн)', coords: [43.075371, 46.834599], type: 'extreme' },
-  { id: 'nokho', name: 'Ресторан Нохьо', coords: [43.065256, 46.832734], type: 'landmark' },
+  
+  // ИСПРАВЛЕНО: Главрыба теперь ресторан, Нохьо - пещера
+  { id: 'glavryba', name: 'Ресторан Главрыба', coords: [43.075371, 46.834599], type: 'restaurant', description: 'Ресторан с видом на каньон' },
+  { id: 'nokho', name: 'Пещера Нохьо', coords: [43.065256, 46.832734], type: 'cave', description: 'Уникальная пещера над каньоном' },
+  
   { id: 'sarykum', name: 'Бархан Сарыкум', coords: [43.004082, 47.236765], type: 'nature' },
   
   { id: 'naryn-kala', name: 'Крепость Нарын-Кала', coords: [42.053199, 48.275200], type: 'history', city: 'Дербент' },
@@ -44,7 +47,7 @@ export const ALL_LOCATIONS: Location[] = [
 
   { id: 'khunzakh', name: 'Хунзахское плато', coords: [42.554613, 46.719514], type: 'nature' },
   { id: 'matlas', name: 'Каменная чаша (Матлас)', coords: [42.604530, 46.584876], type: 'nature' },
-  { id: 'gamсутль', name: 'Село Гамсутль', coords: [42.303376, 46.996166], type: 'history' },
+  { id: 'gamsutl', name: 'Село Гамсутль', coords: [42.303376, 46.996166], type: 'history' },
   { id: 'gunib', name: 'Гуниб (Смотровая)', coords: [42.388628, 46.957798], type: 'nature' },
   
   { id: 'gerey-tyuz', name: 'Винодельня Герей-Тюоз', coords: [42.680069, 47.682121], type: 'winery', city: 'Гергебиль' },
@@ -56,11 +59,23 @@ export const ALL_LOCATIONS: Location[] = [
   { id: 'karadakh', name: 'Карадахская теснина', coords: [42.456801, 46.892043], type: 'nature' },
   { id: 'tsolotl', name: 'Цолотлинский каньон', coords: [42.550048, 46.720265], type: 'nature' },
   
+  // ДОБАВЛЕНЫ Недостающие локации
+  { id: 'shalbuzdag', name: 'Гора Шалбуздаг', coords: [41.550000, 47.950000], type: 'nature', description: 'Священная гора' }, // Примерные координаты, нужно уточнить
+  { id: 'huchni-wp', name: 'Хучнинский водопад', coords: [41.972165, 47.928282], type: 'nature' },
+  { id: 'saltin-wp', name: 'Салтинский водопад', coords: [42.420000, 47.050000], type: 'nature', description: 'Подземный водопад' }, // Примерные координаты
+  { id: 'itlyatlar-wp', name: 'Водопад Итлятляр', coords: [42.470000, 47.100000], type: 'nature' }, // Примерные координаты
+  { id: 'tobot-wp', name: 'Водопад Тобот', coords: [42.468000, 47.112000], type: 'nature' },
+  
   { id: 'akhulgo', name: 'Мемориал Ахульго', coords: [42.774883, 46.738848], type: 'history' },
   { id: 'gimry-tower', name: 'Гимринская башня', coords: [42.747527, 46.874527], type: 'history' },
   { id: 'irganay', name: 'Ирганайское водохранилище', coords: [42.661254, 46.901394], type: 'nature' },
   
   { id: 'goar', name: 'Гоорский Язык тролля', coords: [42.432191, 46.563624], type: 'extreme' },
   { id: 'chokh', name: 'Чохские террасы', coords: [42.318212, 47.014923], type: 'nature' },
-  { id: 'akhty', name: 'Ахты (Горячие источники)', coords: [41.459186, 47.749428], type: 'nature' }
+  { id: 'akhty', name: 'Ахты (Горячие источники)', coords: [41.459186, 47.749428], type: 'nature' },
+  
+  // Дополнительные локации из полного списка
+  { id: 'white-cranes', name: 'Белые Журавли', coords: [42.567624, 46.711574], type: 'nature' },
+  { id: 'harachi', name: 'Смотровая Харачи', coords: [42.670505, 46.841970], type: 'nature' },
+  { id: 'igali-gorge', name: 'Игалийская теснина', coords: [42.730228, 46.606387], type: 'nature' }
 ];
