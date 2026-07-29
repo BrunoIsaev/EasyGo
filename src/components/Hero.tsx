@@ -13,6 +13,7 @@ export function Hero() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState<TourRoute | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Логика поиска: фильтруем маршруты по запросу
@@ -149,7 +150,7 @@ export function Hero() {
                 )}
                 {selectedRoute && (
                   <div className="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <RouteMap route={selectedRoute} />
+                    <RouteMap route={selectedRoute} singleLocation={selectedLocation} />
                   </div>
                 )}
               </div>
