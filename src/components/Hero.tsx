@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Search, Thermometer, X } from "lucide-react";
 import { TOUR_ROUTES, TourRoute } from '@/data/routes';
+import { ALL_LOCATIONS } from '@/data/locations';
 import RouteMap from './RouteMap'; // Импортируем наши маршруты
 
 const HERO_TAGS = ["Места притяжения", "Горы", "Древние аулы", "Этно-туры"] as const;
@@ -13,18 +14,26 @@ export function Hero() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState<TourRoute | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Логика поиска: фильтруем маршруты по запросу
-  const results = useMemo(() => {
-    if (!query.trim()) return [];
+  const searchResults = useMemo(() => {
+    if (!query) return { locations: [], routes: [] };
     const q = query.toLowerCase();
-    return TOUR_ROUTES.filter(route => 
-      route.title.toLowerCase().includes(q) || 
-      route.tags.some(tag => tag.toLowerCase().includes(q)) ||
-      route.description.toLowerCase().includes(q)
+    
+    const foundLocations = ALL_LOCATIONS.filter((loc: any) => 
+      loc.name.toLowerCase().includes(q) || 
+      (loc.city && loc.city.toLowerCase().includes(q))
     );
+
+    const foundRoutes = TOUR_ROUTES.filter((route) => {
+      const matchesTitle = route.title.toLowerCase().includes(q);
+      const matchesDesc = route.description.toLowerCase().includes(q);
+      const matchesTags = route.tags.some((tag: string) => tag.toLowerCase().includes(q));
+      return matchesTitle || matchesDesc || matchesTags;
+    });
+
+    return { locations: foundLocations, routes: foundRoutes };
   }, [query]);
 
   // Закрываем поиск при клике вне области
@@ -32,6 +41,7 @@ export function Hero() {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setSelectedLocation(null);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -94,7 +104,10 @@ export function Hero() {
               />
               
               {query && (
-                <button onClick={() => setQuery('')} className="p-1 hover:bg-gray-200 rounded-full">
+                <button onClick={() => {
+                  setQuery('');
+                  setSelectedLocation(null);
+                }} className="p-1 hover:bg-gray-200 rounded-full">
                   <X className="h-4 w-4 text-gray-500" />
                 </button>
               )}
@@ -111,36 +124,75 @@ export function Hero() {
             {/* ВЫПАДАЮЩИЙ СПИСОК РЕЗУЛЬТАТОВ */}
             {isOpen && query && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl z-[100] max-h-[60vh] overflow-y-auto border border-gray-100">
-                {results.length > 0 ? (
+                {searchResults.locations.length > 0 || searchResults.routes.length > 0 ? (
                   <div className="py-2">
-                    <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-50 mb-1">
-                      Найденные маршруты
-                    </div>
-                    {results.map((route) => (
-                      <div
-                        key={route.id}
-                        onClick={() => setSelectedRoute(route)}
-                        className="group px-4 py-3 hover:bg-emerald-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <h3 className="font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">
-                              {route.title}
-                            </h3>
-                            <p className="text-sm text-gray-500 mt-1 line-clamp-1">{route.description}</p>
-                            <div className="flex items-center gap-2 mt-2">
-                              <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md">
-                                {route.duration}
-                              </span>
-                              <span className="text-xs font-medium px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md">
-                                {route.difficulty}
-                              </span>
+                    {searchResults.locations.length > 0 && (
+                      <div>
+                        <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-50 mb-1">
+                          Найденные места
+                        </div>
+                        {searchResults.locations.map((loc: any) => (
+                          <div
+                            key={loc.id}
+                            onClick={() => {
+                              setSelectedLocation(loc);
+                              setSelectedRoute(null);
+                              setIsOpen(true);
+                            }}
+                            className="group px-4 py-3 hover:bg-emerald-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+                          >
+                            <div className="flex items-start justify-between gap-4">
+                              <div>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">
+                                  {loc.name}
+                                </h3>
+                                {loc.city && (
+                                  <p className="text-sm text-gray-500 mt-1">{loc.city}</p>
+                                )}
+                              </div>
+                              <ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-emerald-500 transition-colors mt-1" />
                             </div>
                           </div>
-                          <ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-emerald-500 transition-colors mt-1" />
-                        </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
+
+                    {searchResults.routes.length > 0 && (
+                      <div>
+                        <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-50 mb-1 mt-2">
+                          Маршруты
+                        </div>
+                        {searchResults.routes.map((route: TourRoute) => (
+                          <div
+                            key={route.id}
+                            onClick={() => {
+                              setSelectedRoute(route);
+                              setSelectedLocation(null);
+                              setIsOpen(true);
+                            }}
+                            className="group px-4 py-3 hover:bg-emerald-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+                          >
+                            <div className="flex items-start justify-between gap-4">
+                              <div>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">
+                                  {route.title}
+                                </h3>
+                                <p className="text-sm text-gray-500 mt-1 line-clamp-1">{route.description}</p>
+                                <div className="flex items-center gap-2 mt-2">
+                                  <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md">
+                                    {route.duration}
+                                  </span>
+                                  <span className="text-xs font-medium px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md">
+                                    {route.difficulty}
+                                  </span>
+                                </div>
+                              </div>
+                              <ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-emerald-500 transition-colors mt-1" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="p-8 text-center text-gray-500">
@@ -148,9 +200,9 @@ export function Hero() {
                     <p className="text-sm mt-2 text-gray-400">Попробуйте: &apos;вино&apos;, &apos;горы&apos;, &apos;семья&apos;</p>
                   </div>
                 )}
-                {selectedRoute && (
+                {(selectedRoute || selectedLocation) && (
                   <div className="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <RouteMap route={selectedRoute} singleLocation={selectedLocation} />
+                    <RouteMap route={selectedRoute ?? undefined} singleLocation={selectedLocation ?? undefined} />
                   </div>
                 )}
               </div>
