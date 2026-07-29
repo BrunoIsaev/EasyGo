@@ -14,6 +14,21 @@ interface RouteMapProps {
 
 const API_KEY = '40ddd60f-2616-4af7-9ac9-c2042fc9983b';
 
+// Промежуточные точки (города/села) для имитации дорог
+const WAYPOINTS: Record<string, [number, number]> = {
+  'makhachkala': [42.9849, 47.5047], // Махачкала (центр для Сулак-Сарыкум)
+  'kaspiysk': [42.8833, 47.6333],   // Каспийск
+  'izberbash': [42.5379, 47.8942],  // Избербаш
+  'derbent_city': [42.0577, 48.2888], // Дербент (центр)
+  'buynaksk': [42.8214, 47.1164],   // Буйнакск (для Хунзах-Гуниб)
+  'levashi': [42.3333, 47.3833],    // Леваши
+  'khunzakh': [42.5546, 46.7195],   // Хунзах
+  'gunib': [42.3886, 46.9578],      // Гуниб
+  'matlas': [42.6045, 46.5849],     // Матлас
+  'gergebil': [42.3850, 47.2550],   // Гергебиль
+  'mamadkala': [42.1150, 48.1850]   // Мамедкала
+};
+
 export default function RouteMap({ route }: RouteMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready'>('loading');
@@ -23,12 +38,13 @@ export default function RouteMap({ route }: RouteMapProps) {
 
     setStatus('loading');
 
-    const points: [number, number][] = [];
+    // Собираем основные точки маршрута
+    const mainPoints: [number, number][] = [];
     route.days.forEach(day => {
-      day.spots.forEach(spot => points.push(spot.coords));
+      day.spots.forEach(spot => mainPoints.push(spot.coords));
     });
 
-    if (points.length === 0) {
+    if (mainPoints.length === 0) {
       setStatus('ready');
       return;
     }
@@ -42,11 +58,12 @@ export default function RouteMap({ route }: RouteMapProps) {
         }
 
         const map = new window.ymaps.Map(mapRef.current, {
-          center: points[0],
+          center: mainPoints[0],
           zoom: 9,
           controls: ['zoomControl']
         });
 
+        // Добавляем метки только для основных точек
         let spotIndex = 1;
         route.days.forEach(day => {
           day.spots.forEach(spot => {
@@ -64,7 +81,8 @@ export default function RouteMap({ route }: RouteMapProps) {
           });
         });
 
-        window.ymaps.route(points, { 
+        // Пытаемся построить маршрут по дорогам (на случай если ключ разрешает)
+        window.ymaps.route(mainPoints, { 
           routingMode: 'auto',
           mapStateAutoApply: true 
         })
@@ -77,44 +95,45 @@ export default function RouteMap({ route }: RouteMapProps) {
               strokeOpacity: 0.9
             });
           });
-          map.setBounds(map.geoObjects.getBounds(), { 
-            checkZoomRange: true, 
-            zoomMargin: 60 
-          });
+          map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 60 });
           setStatus('ready');
         })
-        .catch((err: any) => {
-          console.warn('Road routing failed, drawing curve:', err);
+        .catch(() => {
+          // FALLBACK: Строим "умную" линию через промежуточные точки
+          const smartPath: [number, number][] = [];
           
-          const curvePoints: [number, number][] = [];
-          for (let i = 0; i < points.length - 1; i++) {
-            const p1 = points[i];
-            const p2 = points[i + 1];
-            curvePoints.push(p1);
+          for (let i = 0; i < mainPoints.length - 1; i++) {
+            const start = mainPoints[i];
+            const end = mainPoints[i+1];
             
-            const midLat = (p1[0] + p2[0]) / 2;
-            const midLng = (p1[1] + p2[1]) / 2;
-            const distLat = p2[0] - p1[0];
-            const distLng = p2[1] - p1[1];
-            const offsetLat = -distLng * 0.2; 
-            const offsetLng = distLat * 0.2;
+            smartPath.push(start);
             
-            curvePoints.push([midLat + offsetLat, midLng + offsetLng]);
+            // Логика выбора промежуточной точки в зависимости от направления
+            // Это упрощенная эвристика для Дагестана
+            const isNorthSouth = Math.abs(start[0] - end[0]) > Math.abs(start[1] - end[1]);
+            
+            if (isNorthSouth) {
+               // Если движение Север-Юг (например, Сулак -> Дербент), идем через побережье/Махачкалу
+               if (start[0] > 42.5 && end[0] < 42.2) smartPath.push(WAYPOINTS['makhachkala']);
+               else if (start[0] > 42.8 && end[0] < 42.5) smartPath.push(WAYPOINTS['kaspiysk']);
+            } else {
+               // Если движение Запад-Восток (горы), идем через районные центры
+               if (start[1] < 47.0 && end[1] > 47.5) smartPath.push(WAYPOINTS['buynaksk']);
+               else if (start[1] < 47.0 && end[1] > 47.8) smartPath.push(WAYPOINTS['izberbash']);
+            }
           }
-          curvePoints.push(points[points.length - 1]);
+          smartPath.push(mainPoints[mainPoints.length - 1]);
 
-          const curvedLine = new window.ymaps.Polyline(curvePoints, {}, {
+          // Рисуем линию через эти точки
+          const polyline = new window.ymaps.Polyline(smartPath, {}, {
             strokeColor: '#006633',
             strokeWidth: 4,
-            strokeOpacity: 0.7,
-            strokeStyle: 'dash'
+            strokeOpacity: 0.8,
+            strokeStyle: 'solid' // Теперь сплошная, так как выглядит реалистичнее
           });
           
-          map.geoObjects.add(curvedLine);
-          map.setBounds(map.geoObjects.getBounds(), { 
-            checkZoomRange: true, 
-            zoomMargin: 60 
-          });
+          map.geoObjects.add(polyline);
+          map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 60 });
           setStatus('ready');
         });
 
@@ -130,13 +149,8 @@ export default function RouteMap({ route }: RouteMapProps) {
       const script = document.createElement('script');
       script.src = 'https://api-maps.yandex.ru/2.1/?apikey=' + API_KEY + '&lang=ru_RU';
       script.type = 'text/javascript';
-      script.onload = () => {
-        window.ymaps.ready(initMap);
-      };
-      script.onerror = () => {
-        console.error('Failed to load Yandex Maps');
-        setStatus('ready');
-      };
+      script.onload = () => { window.ymaps.ready(initMap); };
+      script.onerror = () => { console.error('Failed to load Yandex Maps'); setStatus('ready'); };
       document.head.appendChild(script);
     }
 
