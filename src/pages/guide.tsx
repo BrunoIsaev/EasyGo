@@ -1,136 +1,40 @@
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { GUIDE_SECTIONS, Section } from '@/data/guideData';
-import styles from '@/styles/GuidePage.module.css';
 import { TOUR_ROUTES } from '@/data/routes';
+import styles from '@/styles/Home.module.css'; // Убедись, что путь к стилям верный
 
-const GuidePage = () => {
-  const router = useRouter();
-
-  // Состояние для хранения ID выбранного раздела
-  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
-  
-  // Это состояние нужно, чтобы избежать мигания контента, пока роутер не готов
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Этот эффект будет срабатывать при загрузке страницы и при изменении URL
-  useEffect(() => {
-    // Ждем, пока router.query будет доступен
-    if (!router.isReady) {
-      return;
-    }
-
-    const { section } = router.query;
-
-    // Проверяем, есть ли валидный ID раздела в URL
-    if (section && typeof section === 'string' && GUIDE_SECTIONS.some(s => s.id === section)) {
-      setSelectedSectionId(section);
-    } else {
-      // Если параметра нет или он неверный, показываем страницу выбора
-      setSelectedSectionId(null);
-    }
-    
-    setIsLoading(false); // Загрузка завершена
-  }, [router.isReady, router.query]);
-
-  // Находим данные выбранного раздела
-  const selectedSectionData = GUIDE_SECTIONS.find(
-    (section) => section.id === selectedSectionId
-  );
-  
-  // Функция для возврата на ГЛАВНУЮ страницу сайта
-  const handleGoBack = () => {
-    router.push('/'); // Эта команда всегда ведет на главную
-  };
-
-  // Пока идет определение раздела, показываем заглушку
-  if (isLoading) {
-    return <div>Загрузка...</div>;
-  }
-
-  // Функция для отображения детального вида
-  const renderDetailView = (sectionData: Section) => (
-    <div className="w-full bg-white px-6 py-8 text-gray-900 md:px-12">
-      <button
-        onClick={handleGoBack}
-        className="mb-6 flex items-center gap-2 text-gray-700 transition-colors hover:text-gray-900"
-      >
-        ← Назад
-      </button>
-
-      <h1 className="mb-8 text-3xl font-bold md:text-4xl">
-        {sectionData.title}
-      </h1>
-
-      <div className="space-y-6">
-        {sectionData.cards.map((card) => (
-          <div key={card.id} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-xl font-semibold text-gray-900">{card.title}</h2>
-            <p className="mb-3 text-gray-700">{card.shortDescription}</p>
-            <p className="text-sm leading-relaxed text-gray-600">{card.fullDescription}</p>
-            {card.keyLocations && card.keyLocations.length > 0 && (
-              <div className="mt-4 border-t border-gray-200 pt-4">
-                <span className="text-sm font-medium text-gray-500">Ключевые места: </span>
-                <span className="text-sm text-gray-700">{card.keyLocations.join(', ')}</span>
-              </div>
-            )}
-            {card.photoIdea && (
-              <div className="mt-4 border-t border-gray-200 pt-4">
-                <span className="text-sm font-medium text-gray-500">Идея для фото: </span>
-                <p className="mt-1 text-sm italic text-gray-600">{card.photoIdea}</p>
-              </div>
-            )}
-          </div>
-        ))}
+// Вспомогательный компонент для карточки маршрута
+const RouteCard = ({ route }: { route?: any }) => {
+  if (!route) return null;
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all duration-300 group cursor-pointer">
+      <div className="flex justify-between items-start mb-2">
+        <h3 className="text-lg font-bold text-slate-800 group-hover:text-emerald-600 transition-colors line-clamp-1">{route.title}</h3>
+        <span className={`text-xs px-2 py-1 rounded-full font-medium shrink-0 ml-2 ${
+          route.difficulty === 'Сложный' ? 'bg-red-100 text-red-700' : 
+          route.difficulty === 'Средний' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
+        }`}>
+          {route.difficulty}
+        </span>
+      </div>
+      <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">{route.description}</p>
+      <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+        <span className="px-2 py-1 bg-gray-50 rounded border border-gray-100">⏱ {route.duration}</span>
       </div>
     </div>
   );
+};
 
-  // Функция для отображения сетки с разделами
-  const renderGridView = () => (
-    <>
-      <h1 className={styles.mainTitle}>Гид по Дагестану</h1>
-      <p className={styles.mainDescription}>
-        Выберите интересующий вас раздел, чтобы увидеть подробности.
-      </p>
-      <div className={styles.sectionGrid}>
-        {GUIDE_SECTIONS.map((section) => (
-          <div
-            key={section.id}
-            className={styles.sectionCard}
-            onClick={() => setSelectedSectionId(section.id)}
-          >
-            {section.image && (
-              <Image
-                src={section.image}
-                alt={section.title}
-                width={400}
-                height={200}
-                className="mb-4 w-full rounded-t-xl object-cover"
-                style={{ height: 200 }}
-              />
-            )}
-            <h2 className={styles.sectionTitle}>{section.title}</h2>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-
+export default function GuidePage({ selectedSectionData, renderDetailView, renderGridView }: any) {
   return (
     <>
       <Head>
-        <title>
-          {selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo
-        </title>
+        <title>{selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo</title>
       </Head>
       <main className={styles.container}>
         {selectedSectionData ? (
           selectedSectionData.title === 'Приключения' ? (
-            <div className="max-w-4xl mx-auto pb-20 px-4">
-              <h1 className="text-4xl font-bold mb-12 text-center mt-8">Приключения</h1>
+            <div className="max-w-4xl mx-auto pb-20 px-4 w-full">
+              <h1 className="text-4xl font-bold mb-12 text-center mt-8 text-slate-900">Приключения</h1>
               
               {/* БЛОК 1: РАФТИНГ */}
               <section className="mb-16">
@@ -141,7 +45,7 @@ const GuidePage = () => {
                   предлагая маршруты как для новичков, так и для опытных рафтеров. Предоставляется всё необходимое 
                   оборудование и сопровождение опытных инструкторов.
                 </p>
-                <p className="text-sm text-gray-500 italic mb-6"> Ключевые места: База «Остров Рафт» (Шамильский район)</p>
+                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: База «Остров Рафт» (Шамильский район)</p>
                 <RouteCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-2')} />
               </section>
 
@@ -208,7 +112,7 @@ const GuidePage = () => {
                       <p className="text-emerald-300 mt-2 text-xl font-medium">5 дней абсолютного драйва</p>
                     </div>
                     <div className="flex gap-3 shrink-0">
-                       <span className="px-4 py-2 bg-white/10 rounded-xl text-sm backdrop-blur border border-white/10">️ 5 дней</span>
+                       <span className="px-4 py-2 bg-white/10 rounded-xl text-sm backdrop-blur border border-white/10">⏱ 5 дней</span>
                        <span className="px-4 py-2 bg-red-500/90 rounded-xl text-sm font-bold shadow-lg shadow-red-500/20">⚡ Сложный</span>
                     </div>
                   </div>
@@ -220,7 +124,6 @@ const GuidePage = () => {
                   </p>
 
                   <button 
-                    onClick={() => { /* Здесь логика выбора большого тура */ }}
                     className="group relative inline-flex items-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:-translate-y-1"
                   >
                     <span>Выбрать Экстрим-Марафон</span>
@@ -232,10 +135,11 @@ const GuidePage = () => {
               </div>
 
             </div>
+          ) : (
+            renderDetailView(selectedSectionData)
           )
+        ) : renderGridView()}
       </main>
     </>
   );
-}; // <-- ВОТ ЭТА СКОБКА БЫЛА ПРОПУЩЕНА
-
-export default GuidePage;
+}
