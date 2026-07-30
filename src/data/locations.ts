@@ -78,4 +78,10 @@ export const ALL_LOCATIONS: Location[] = [
   { id: 'white-cranes', name: 'Белые Журавли', coords: [42.567624, 46.711574], type: 'nature' },
   { id: 'harachi', name: 'Смотровая Харачи', coords: [42.670505, 46.841970], type: 'nature' },
   { id: 'igali-gorge', name: 'Игалийская теснина', coords: [42.730228, 46.606387], type: 'nature' }
+
+  // --- НОВЫЕ ЛОКАЦИИ ДЛЯ ПРИКЛЮЧЕНИЙ ---
+  { id: 'rafting-base', name: 'База «Остров Рафт»', coords: [42.650000, 46.950000], type: 'extreme', description: 'Старт рафтинга по Аварскому Койсу (Шамильский район)' },
+  { id: 'pushkin-tau', name: 'Гора Пушкин-Тау', coords: [42.549312, 47.856181], type: 'extreme', city: 'Избербаш', description: 'Место для полетов на параплане' },
+  { id: 'via-ferrata', name: 'Виа Феррата (Нохьо)', coords: [43.065256, 46.832734], type: 'extreme', description: 'Скальная тропа над каньоном' },
+
 ];
