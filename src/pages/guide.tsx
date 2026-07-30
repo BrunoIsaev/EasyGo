@@ -26,7 +26,10 @@ const TourCard = ({ route }: { route: any }) => {
 };
 
 export default function GuidePage({ selectedSectionData }: any) {
-  if (selectedSectionData && selectedSectionData.title === 'Приключения') {
+  // Показываем "Приключения" по умолчанию, если раздел не выбран или выбран именно он
+  const showAdventures = !selectedSectionData || selectedSectionData.title === 'Приключения';
+  
+  if (showAdventures) {
     return (
       <>
         <Head><title>Приключения | EasyGo</title></Head>
