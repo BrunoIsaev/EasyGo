@@ -23,6 +23,27 @@ const RouteCard = ({ route }: { route?: any }) => {
   );
 };
 
+
+const SimpleCard = ({ route }: { route?: any }) => {
+  if (!route) return null;
+  return (
+    <div style={{ border: '1px solid #e5e7eb', padding: '24px', borderRadius: '16px', marginBottom: '32px', background: '#fff', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+        <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '700', color: '#1e293b' }}>{route.title}</h3>
+        <span style={{ 
+          fontSize: '0.75rem', padding: '4px 10px', borderRadius: '9999px', fontWeight: '600', whiteSpace: 'nowrap', marginLeft: '12px',
+          background: route.difficulty === 'Сложный' ? '#fee2e2' : route.difficulty === 'Средний' ? '#fef3c7' : '#dcfce7',
+          color: route.difficulty === 'Сложный' ? '#b91c1c' : route.difficulty === 'Средний' ? '#b45309' : '#15803d'
+        }}>{route.difficulty}</span>
+      </div>
+      <p style={{ color: '#4b5563', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '16px' }}>{route.description}</p>
+      <div style={{ display: 'flex', gap: '8px', fontSize: '0.85rem', color: '#6b7280' }}>
+        <span style={{ background: '#f3f4f6', padding: '4px 10px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>⏱ {route.duration}</span>
+      </div>
+    </div>
+  );
+};
+
 export default function GuidePage({ selectedSectionData, renderDetailView, renderGridView }: any) {
   return (
     <>
@@ -44,7 +65,9 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
                   предлагая маршруты как для новичков, так и для опытных рафтеров. Предоставляется всё необходимое 
                   оборудование и сопровождение опытных инструкторов.
                 </p>
-                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: База «Остров Рафт» (Шамильский район)</p>
+                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: База «Остров Рафт» (Шамильский район)
+
+              <SimpleCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-2')} /></p>
                 <RouteCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-2')} />
               </section>
 
@@ -56,7 +79,9 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
                   Почувствуйте полный контроль над своим приключением! Мы предлагаем прогулки на квадроциклах по горным 
                   маршрутам Буйнакского района и других локаций. Выбирайте тур по душе: от коротких заездов до многодневных экспедиций.
                 </p>
-                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: База «На рахате» (с. Ново-Зубутли)</p>
+                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: База «На рахате» (с. Ново-Зубутли)
+
+              <SimpleCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-4')} /></p>
                 <RouteCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-4')} />
               </section>
 
@@ -68,7 +93,9 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
                   Увидеть Дагестан таким, каким его видят только птицы. Мы организуем тандем-полеты на параплане с опытными 
                   инструкторами в окрестностях Избербаша, со знаменитой горы Пушкин-Тау.
                 </p>
-                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: Гора Пушкин-Тау (г. Избербаш)</p>
+                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: Гора Пушкин-Тау (г. Избербаш)
+
+              <SimpleCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-5')} /></p>
                 <RouteCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-5')} />
               </section>
 
@@ -80,7 +107,12 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
                   Для самых смелых! Попробуйте скоростной спуск на зиплайне в Матласе или прямо над Сулакским каньоном в «Главрыбе». 
                   А если этого мало — совершите прыжок с тарзанки со 100-метровой скалы водопада Тобот.
                 </p>
-                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: Зиплайн: Матлас, «Главрыба», Тарзанка: водопад Тобот</p>
+                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: Зиплайн: Матлас, «Главрыба», Тарзанка: водопад Тобот
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+                <SimpleCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-1')} />
+                <SimpleCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-3')} />
+              </div></p>
                 <div className="grid md:grid-cols-2 gap-6">
                   <RouteCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-1')} />
                   <RouteCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-3')} />
@@ -95,7 +127,50 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
                   «Виа феррата» — это скальная тропа, оборудованная металлическими скобами и страховочным тросом. Вам 
                   предстоит карабкаться вдоль отвесной скалы и проходить по подвесным мостам на высоте.
                 </p>
-                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: Развлекательный комплекс «Нохьо» (Сулакский каньон)</p>
+                <p className="text-sm text-gray-500 italic mb-6">📍 Ключевые места: Развлекательный комплекс «Нохьо» (Сулакский каньон)
+
+              <SimpleCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-1')} />
+
+              {/* ЭКСТРИМ-МАРАФОН */}
+              <div style={{ 
+                marginTop: '60px', padding: '40px', borderRadius: '24px', 
+                background: 'linear-gradient(135deg, #064e3b 0%, #0f172a 100%)', 
+                color: '#fff', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' 
+              }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', gap: '16px' }}>
+                  <div>
+                    <span style={{ display: 'inline-block', padding: '6px 12px', background: '#10b981', color: '#fff', fontSize: '0.75rem', fontWeight: 'bold', borderRadius: '9999px', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>🔥 Рекомендуем</span>
+                    <h2 style={{ margin: 0, fontSize: '2rem', fontWeight: '800', lineHeight: '1.2' }}>ЭКСТРИМ-МАРАФОН</h2>
+                    <p style={{ margin: '8px 0 0 0', color: '#6ee7b7', fontSize: '1.25rem', fontWeight: '500' }}>5 дней абсолютного драйва</p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                     <span style={{ padding: '8px 16px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '0.9rem', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.1)' }}>⏱ 5 дней</span>
+                     <span style={{ padding: '8px 16px', background: '#ef4444', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 'bold', boxShadow: '0 4px 6px -1px rgba(239,68,68,0.3)' }}> Сложный</span>
+                  </div>
+                </div>
+                
+                <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '1.1rem', marginBottom: '32px', maxWidth: '800px' }}>
+                  Зачем выбирать что-то одно? Пройдите весь путь экстремального Дагестана за одну поездку. 
+                  Мы взяли лучшие активности — от бурного рафтинга и скальных троп до полета над морем — 
+                  и собрали их в идеальный маршрут. Трансфер, гиды, оборудование и эмоции включены.
+                </p>
+
+                <button 
+                  onClick={() => { /* Логика выбора тура */ }}
+                  style={{ 
+                    display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '16px 32px', 
+                    background: '#10b981', color: '#fff', fontWeight: 'bold', fontSize: '1.1rem', 
+                    borderRadius: '16px', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease',
+                    boxShadow: '0 10px 15px -3px rgba(16,185,129,0.3)'
+                  }}
+                  onMouseOver={(e: any) => { e.currentTarget.style.background = '#34d399'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                  onMouseOut={(e: any) => { e.currentTarget.style.background = '#10b981'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <span>Выбрать Экстрим-Марафон</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+              </div>
+</p>
                 <RouteCard route={TOUR_ROUTES.find(r => r.id === 'adv-day-1')} />
               </section>
 
