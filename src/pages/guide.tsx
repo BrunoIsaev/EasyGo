@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { TOUR_ROUTES } from '@/data/routes';
-import styles from '@/styles/Home.module.css'; // Убедись, что путь к стилям верный
 
 // Вспомогательный компонент для карточки маршрута
 const RouteCard = ({ route }: { route?: any }) => {
@@ -30,7 +29,7 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
       <Head>
         <title>{selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo</title>
       </Head>
-      <main className={styles.container}>
+      <main className="min-h-screen bg-white pt-20 pb-10 px-4 sm:px-6 lg:px-8">
         {selectedSectionData ? (
           selectedSectionData.title === 'Приключения' ? (
             <div className="max-w-4xl mx-auto pb-20 px-4 w-full">
