@@ -137,7 +137,30 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
           ) : (
             renderDetailView(selectedSectionData)
           )
-        ) : renderGridView()}
+        ) : (
+            <div className="max-w-6xl mx-auto pb-20 px-4 w-full">
+              <h1 className="text-4xl font-bold mb-12 text-center mt-8 text-slate-900">Все маршруты</h1>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {TOUR_ROUTES.map((route) => (
+                  <div key={route.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all duration-300 group cursor-pointer">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-lg font-bold text-slate-800 group-hover:text-emerald-600 transition-colors line-clamp-1">{route.title}</h3>
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium shrink-0 ml-2 ${
+                        route.difficulty === 'Сложный' ? 'bg-red-100 text-red-700' : 
+                        route.difficulty === 'Средний' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
+                      }`}>
+                        {route.difficulty}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">{route.description}</p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+                      <span className="px-2 py-1 bg-gray-50 rounded border border-gray-100">⏱ {route.duration}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
       </main>
     </>
   );
