@@ -78,12 +78,25 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
       </>
     );
   }
+  // Если секция не выбрана, показываем список всех туров
   return (
     <>
-      <Head><title>{selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo</title></Head>
-      <main style={{ minHeight: '100vh', paddingTop: '80px', paddingBottom: '40px', paddingLeft: '20px', paddingRight: '20px' }}>
-        {selectedSectionData ? renderDetailView(selectedSectionData) : renderGridView()}
-      </main>
+      <Head><title>Гид по Дагестану | EasyGo</title></Head>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '40px', textAlign: 'center' }}>Все маршруты</h1>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+          {TOUR_ROUTES.map((route: any) => (
+            <div key={route.id} style={{ border: '1px solid #e5e7eb', borderRadius: '16px', padding: '24px', background: '#fff', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+              <h3 style={{ margin: '0 0 12px 0', fontSize: '1.25rem', fontWeight: '700', color: '#111' }}>{route.title}</h3>
+              <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: '16px' }}>{route.description}</p>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ fontSize: '0.8rem', background: '#f3f4f6', padding: '4px 8px', borderRadius: '6px' }}>{route.duration}</span>
+                <span style={{ fontSize: '0.8rem', background: route.difficulty === 'Сложный' ? '#fee2e2' : route.difficulty === 'Средний' ? '#fef3c7' : '#dcfce7', color: route.difficulty === 'Сложный' ? '#b91c1c' : route.difficulty === 'Средний' ? '#b45309' : '#15803d', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold' }}>{route.difficulty}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 }
