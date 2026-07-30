@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { GUIDE_SECTIONS, Section } from '@/data/guideData';
 import styles from '@/styles/GuidePage.module.css';
+import { TOUR_ROUTES } from '@/data/routes';
 
 const GuidePage = () => {
   const router = useRouter();
@@ -126,7 +127,33 @@ const GuidePage = () => {
         </title>
       </Head>
       <main className={styles.container}>
-        {selectedSectionData ? renderDetailView(selectedSectionData) : renderGridView()}
+        {selectedSectionData ? (
+          selectedSectionData.title === 'Приключения' ? (
+            <div className="space-y-6">
+              <h1 className="text-3xl font-bold mb-6">{selectedSectionData.title}</h1>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {TOUR_ROUTES.filter(r => r.tags.includes('приключения')).map((route) => (
+                  <div key={route.id} className="bg-white rounded-xl shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer"
+                       onClick={() => window.location.href = `/guide?route=${route.id}`}> 
+                    {/* Примечание: здесь нужна логика перехода к деталям маршрута. 
+                        Если у тебя есть роутинг для деталей, используй его. 
+                        Пока сделаем заглушку или ссылку на главную с открытым поиском */}
+                    <h3 className="text-xl font-semibold mb-2">{route.title}</h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{route.description}</p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <span className="px-2 py-1 bg-gray-100 rounded">{route.duration}</span>
+                      <span className={`px-2 py-1 rounded ${route.difficulty === 'Сложный' ? 'bg-red-100 text-red-700' : route.difficulty === 'Средний' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+                        {route.difficulty}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            renderDetailView(selectedSectionData)
+          )
+        ) : renderGridView()}
       </main>
     </>
   );
