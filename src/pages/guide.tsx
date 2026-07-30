@@ -3,21 +3,17 @@ import { TOUR_ROUTES } from '@/data/routes';
 
 const TourCard = ({ route }: { route: any }) => {
   if (!route) return null;
+  const cleanTitle = route.title.replace(/^День \d+:\s*/, '');
   return (
     <div 
-      style={{ 
-        display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', 
-        background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', 
-        marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-      }}
-      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#10b981'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-      onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }}
+      style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
+      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#10b981'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
+      onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
       onClick={() => window.location.href = '/?search=' + encodeURIComponent(route.title)}
     >
       <div style={{ width: '40px', height: '40px', background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
       <div style={{ flex: 1 }}>
-        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>{route.title}</h3>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>{cleanTitle}</h3>
         <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>{route.description}</p>
       </div>
       <div style={{ color: '#9ca3af', fontSize: '1.2rem' }}>→</div>
@@ -26,7 +22,6 @@ const TourCard = ({ route }: { route: any }) => {
 };
 
 export default function GuidePage({ selectedSectionData }: any) {
-  // Показываем "Приключения" по умолчанию, если раздел не выбран или выбран именно он
   const showAdventures = !selectedSectionData || selectedSectionData.title === 'Приключения';
   
   if (showAdventures) {
@@ -35,6 +30,22 @@ export default function GuidePage({ selectedSectionData }: any) {
         <Head><title>Приключения | EasyGo</title></Head>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Рафтинг по Аварскому Койсу</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Покори бурную горную реку! Командный сплав по маршрутам разной сложности.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сплавы по горным рекам Дагестана — это незабываемый опыт. Мы организуем туры по реке Аварское Койсу, предлагая маршруты как для новичков, так и для опытных рафтеров. Предоставляется всё необходимое оборудование и сопровождение опытных инструкторов.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: База «Остров Рафт» (Шамильский район)</p>
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-2')} />
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Квадротуры: Свобода бездорожья</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>За рулем мощного квадроцикла по самым диким тропам. Крутые подъемы, спуски и виды, от которых захватывает дух.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Почувствуйте полный контроль над своим приключением! Мы предлагаем прогулки на квадроциклах по горным маршрутам Буйнакского района и других локаций. Выбирайте тур по душе: от коротких заездов до многодневных экспедиций.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Хучни, Дербент</p>
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-4')} />
+          </section>
+
           <section style={{ marginBottom: '48px' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Полет на параплане</h2>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Взлети над горами и морем! Тандемный полет с инструктором — самый безопасный способ ощутить свободу.</p>
@@ -74,21 +85,7 @@ export default function GuidePage({ selectedSectionData }: any) {
   return (
     <>
       <Head><title>Гид по Дагестану | EasyGo</title></Head>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '40px', textAlign: 'center' }}>Все маршруты</h1>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
-          {TOUR_ROUTES.map((route: any) => (
-            <div key={route.id} style={{ border: '1px solid #e5e7eb', borderRadius: '16px', padding: '24px', background: '#fff', cursor: 'pointer' }} onClick={() => window.location.href = '/?search=' + encodeURIComponent(route.title)}>
-              <h3 style={{ margin: '0 0 12px 0', fontSize: '1.25rem', fontWeight: '700' }}>{route.title}</h3>
-              <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: '16px' }}>{route.description}</p>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <span style={{ fontSize: '0.8rem', background: '#f3f4f6', padding: '4px 8px', borderRadius: '6px' }}>{route.duration}</span>
-                <span style={{ fontSize: '0.8rem', background: route.difficulty === 'Сложный' ? '#fee2e2' : '#fef3c7', color: route.difficulty === 'Сложный' ? '#b91c1c' : '#b45309', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold' }}>{route.difficulty}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <div style={{ padding: '100px 20px', textAlign: 'center' }}><h1>Раздел загружается...</h1></div>
     </>
   );
 }
