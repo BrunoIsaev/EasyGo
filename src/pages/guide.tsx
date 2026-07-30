@@ -81,7 +81,7 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
   return (
     <>
       <Head><title>{selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo</title></Head>
-      <main style={{ minHeight: '100vh', paddingTop: '80px', paddingBottom: '40px', paddingHorizontal: '20px' }}>
+      <main style={{ minHeight: '100vh', paddingTop: '80px', paddingBottom: '40px', paddingLeft: '20px', paddingRight: '20px' }}>
         {selectedSectionData ? renderDetailView(selectedSectionData) : renderGridView()}
       </main>
     </>
