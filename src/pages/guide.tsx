@@ -1,4 +1,6 @@
+import BookingModal from '@/components/BookingModal';
 import Head from 'next/head';
+import { useState } from 'react';
 import { TOUR_ROUTES } from '@/data/routes';
 
 const TourCard = ({ route }: { route: any }) => {
@@ -9,7 +11,7 @@ const TourCard = ({ route }: { route: any }) => {
       style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
       onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#10b981'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
       onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
-      onClick={() => window.location.href = '/?search=' + encodeURIComponent(route.title)}
+      onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA[route.id])}
     >
       <div style={{ width: '40px', height: '40px', background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
       <div style={{ flex: 1 }}>
@@ -21,7 +23,48 @@ const TourCard = ({ route }: { route: any }) => {
   );
 };
 
+
+const ADVENTURE_TOURS_DATA: Record<string, any> = {
+  'adv-day-1': {
+    id: 'adv-day-1',
+    title: 'Джиппинг, Нохьо и Сулак',
+    basePrice: 5500,
+    program: ['Трансфер до Сулакского каньона', 'Посещение пещеры Нохьо и Виа Феррата', 'Прогулка на катерах по бирюзовой воде', 'Обед в ресторане «Главрыба»', 'Экскурсия на бархан Сарыкум']
+  },
+  'adv-day-2': {
+    id: 'adv-day-2',
+    title: 'Рафтинг, Гоор и Карадах',
+    basePrice: 5500,
+    program: ['Трансфер к реке Аварское Койсу', 'Инструктаж и подготовка снаряжения', 'Сплав по горной реке', 'Посещение теснины Гоор', 'Обед на природе']
+  },
+  'adv-day-3': {
+    id: 'adv-day-3',
+    title: 'Хунзах, Лошади и Тарзанка',
+    basePrice: 5500,
+    program: ['Трансфер на Хунзахское плато', 'Конная прогулка по плато', 'Зиплайн в Матласе', 'Прыжок с тарзанки у водопада Тобот', 'Обед в горном кафе']
+  },
+  'adv-day-4': {
+    id: 'adv-day-4',
+    title: 'Багги, Хучни и Лунь',
+    basePrice: 5500,
+    program: ['Трансфер в Дербентский район', 'Заезд на багги по бездорожью', 'Посещение водопада в Хучни', 'Осмотр экраноплана «Лунь»', 'Обед у Каспия']
+  },
+  'adv-day-5': {
+    id: 'adv-day-5',
+    title: 'Избербаш Параплан',
+    basePrice: 5500,
+    program: ['Трансфер на гору Пушкин-Тау', 'Подготовка параплана и инструктаж', 'Тандемный полет над морем', 'Фотосессия на вершине', 'Обед в Избербаше']
+  },
+  'adventure-full-5days': {
+    id: 'adventure-full-5days',
+    title: 'ЭКСТРИМ-МАРАФОН (5 дней)',
+    basePrice: 25000, // Примерная цена за 5 дней
+    program: ['День 1: Сулак и Нохьо', 'День 2: Рафтинг и Гоор', 'День 3: Хунзах и Тарзанка', 'День 4: Багги и Лунь', 'День 5: Параплан в Избербаше', 'Проживание и трансферы включены']
+  }
+};
+
 export default function GuidePage({ selectedSectionData }: any) {
+  const [selectedTour, setSelectedTour] = useState<any>(null);
   const showAdventures = !selectedSectionData || selectedSectionData.title === 'Приключения';
   
   if (showAdventures) {
@@ -74,13 +117,16 @@ export default function GuidePage({ selectedSectionData }: any) {
             <h2 style={{ margin: '0 0 8px 0', fontSize: '1.5rem', fontWeight: '800' }}>🔥 ЭКСТРИМ-МАРАФОН</h2>
             <p style={{ margin: '0 0 16px 0', fontSize: '1.1rem', fontWeight: '600', color: '#374151' }}>5 дней абсолютного драйва</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px', color: '#4b5563' }}>Зачем выбирать что-то одно? Пройдите весь путь экстремального Дагестана за одну поездку. Мы взяли лучшие активности — от бурного рафтинга и скальных троп до полета над морем — и собрали их в идеальный маршрут. Трансфер, гиды, оборудование и эмоции включены.</p>
-            <button onClick={() => window.location.href = '/?search=' + encodeURIComponent('БОЛЬШОЙ ТУР: Приключения')} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#ef4444', color: '#fff', fontWeight: 'bold', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>[ Выбрать Экстрим-Марафон → ]</button>
+            <button onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adventure-full-5days'])} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#ef4444', color: '#fff', fontWeight: 'bold', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>[ Выбрать Экстрим-Марафон → ]</button>
           </div>
 
         </div>
       </>
-    );
+      );
   }
+  
+  {/* Рендер модалки бронирования */}
+  <BookingModal tour={selectedTour} onClose={() => setSelectedTour(null)} />
 
   return (
     <>
