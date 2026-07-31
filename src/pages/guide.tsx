@@ -196,7 +196,7 @@ export default function GuidePage({ selectedSectionData }: any) {
       <Head><title>Гид по Дагестану | EasyGo</title></Head>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', textAlign: 'center' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '20px' }}>Раздел не найден</h1>
-        <p style={{ color: '#6b7280', marginBottom: '20px' }}>Получен заголовок: "{currentTitle}"</p>
+        <p style={{ color: #6b7280, marginBottom: 20px }}>Получен заголовок: "{currentTitle}"</p>
         <Link href="/" style={{ display: 'inline-block', marginTop: '20px', color: '#064e3b', textDecoration: 'underline' }}>← На главную</Link>
       </div>
     </>
