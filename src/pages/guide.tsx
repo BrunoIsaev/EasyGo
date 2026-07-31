@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -95,9 +94,7 @@ export default function GuidePage() {
   );
 
   const BackButton = () => (
-    <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0' }} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', marginBottom: '20px', textDecoration: 'none' }}>
-      ← Назад
-    </button>
+    <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>← Назад</button>
   );
 
   // 1. РАЗДЕЛ ПРИКЛЮЧЕНИЯ
