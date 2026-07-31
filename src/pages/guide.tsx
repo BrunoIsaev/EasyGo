@@ -36,7 +36,7 @@ const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
   );
 };
 
-export default function GuidePage({ selectedSectionData, renderDetailView, renderGridView }: any) {
+export default function GuidePage({ selectedSectionData }: any) {
   const [selectedTour, setSelectedTour] = useState<any>(null);
   
   // Если выбрана секция "Приключения" - показываем наш новый дизайн
@@ -109,15 +109,27 @@ export default function GuidePage({ selectedSectionData, renderDetailView, rende
     );
   }
 
-  // Для ВСЕХ остальных разделов (Культура, Гастро, Семья) используем СТАРЫЙ рендер
+  // Для остальных разделов пока показываем заглушку
   return (
     <>
       <Head>
         <title>{selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo</title>
       </Head>
-      <main style={{ minHeight: '100vh', paddingTop: '80px', paddingBottom: '40px', paddingLeft: '20px', paddingRight: '20px' }}>
-        {selectedSectionData ? renderDetailView(selectedSectionData) : renderGridView()}
-      </main>
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif' }}>
+        {/* Кнопка Назад */}
+        <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>
+          ← Назад
+        </button>
+        
+        <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '20px' }}>{selectedSectionData?.title || 'Раздел в разработке'}</h1>
+        <p style={{ color: '#6b7280', lineHeight: '1.6' }}>
+          Мы активно наполняем этот раздел интересными маршрутами и турами. 
+          Скоро здесь появится подробная информация о культурных, гастрономических и семейных путешествиях по Дагестану.
+        </p>
+        <p style={{ marginTop: '20px', color: '#6b7280' }}>
+          А пока вы можете посмотреть наши <a href="/guide" style={{ color: '#064e3b', textDecoration: 'underline' }}>Приключения</a>.
+        </p>
+      </div>
     </>
   );
 }
