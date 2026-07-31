@@ -1,9 +1,20 @@
-import BookingModal from '@/components/BookingModal';
 import Head from 'next/head';
 import { useState } from 'react';
 import { TOUR_ROUTES } from '@/data/routes';
+import BookingModal from '@/components/BookingModal';
 
-const TourCard = ({ route }: { route: any }) => {
+
+const ADVENTURE_TOURS_DATA: Record<string, any> = {
+  'adv-day-1': { id: 'adv-day-1', title: 'Джиппинг, Нохьо и Сулак', basePrice: 5500, program: ['Трансфер до Сулакского каньона', 'Посещение пещеры Нохьо и Виа Феррата', 'Прогулка на катерах по бирюзовой воде', 'Обед в ресторане «Главрыба»', 'Экскурсия на бархан Сарыкум'] },
+  'adv-day-2': { id: 'adv-day-2', title: 'Рафтинг, Гоор и Карадах', basePrice: 5500, program: ['Трансфер к реке Аварское Койсу', 'Инструктаж и подготовка снаряжения', 'Сплав по горной реке', 'Посещение теснины Гоор', 'Обед на природе'] },
+  'adv-day-3': { id: 'adv-day-3', title: 'Хунзах, Лошади и Тарзанка', basePrice: 5500, program: ['Трансфер на Хунзахское плато', 'Конная прогулка по плато', 'Зиплайн в Матласе', 'Прыжок с тарзанки у водопада Тобот', 'Обед в горном кафе'] },
+  'adv-day-4': { id: 'adv-day-4', title: 'Багги, Хучни и Лунь', basePrice: 5500, program: ['Трансфер в Дербентский район', 'Заезд на багги по бездорожью', 'Посещение водопада в Хучни', 'Осмотр экраноплана «Лунь»', 'Обед у Каспия'] },
+  'adv-day-5': { id: 'adv-day-5', title: 'Избербаш Параплан', basePrice: 5500, program: ['Трансфер на гору Пушкин-Тау', 'Подготовка параплана и инструктаж', 'Тандемный полет над морем', 'Фотосессия на вершине', 'Обед в Избербаше'] },
+  'adventure-full-5days': { id: 'adventure-full-5days', title: 'ЭКСТРИМ-МАРАФОН (5 дней)', basePrice: 25000, program: ['День 1: Сулак и Нохьо', 'День 2: Рафтинг и Гоор', 'День 3: Хунзах и Тарзанка', 'День 4: Багги и Лунь', 'День 5: Параплан в Избербаше', 'Проживание и трансферы включены'] }
+};
+
+
+const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
   if (!route) return null;
   const cleanTitle = route.title.replace(/^День \d+:\s*/, '');
   return (
@@ -11,9 +22,9 @@ const TourCard = ({ route }: { route: any }) => {
       style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
       onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#10b981'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
       onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
-      onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA[route.id])}
+      onClick={onClick}
     >
-      <div style={{ width: '40px', height: '40px', background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
+      <div style={{ width: '40px', height: '40px', background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '1.2rem', flexShrink: 0 }}></div>
       <div style={{ flex: 1 }}>
         <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>{cleanTitle}</h3>
         <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>{route.description}</p>
@@ -21,46 +32,6 @@ const TourCard = ({ route }: { route: any }) => {
       <div style={{ color: '#9ca3af', fontSize: '1.2rem' }}>→</div>
     </div>
   );
-};
-
-
-const ADVENTURE_TOURS_DATA: Record<string, any> = {
-  'adv-day-1': {
-    id: 'adv-day-1',
-    title: 'Джиппинг, Нохьо и Сулак',
-    basePrice: 5500,
-    program: ['Трансфер до Сулакского каньона', 'Посещение пещеры Нохьо и Виа Феррата', 'Прогулка на катерах по бирюзовой воде', 'Обед в ресторане «Главрыба»', 'Экскурсия на бархан Сарыкум']
-  },
-  'adv-day-2': {
-    id: 'adv-day-2',
-    title: 'Рафтинг, Гоор и Карадах',
-    basePrice: 5500,
-    program: ['Трансфер к реке Аварское Койсу', 'Инструктаж и подготовка снаряжения', 'Сплав по горной реке', 'Посещение теснины Гоор', 'Обед на природе']
-  },
-  'adv-day-3': {
-    id: 'adv-day-3',
-    title: 'Хунзах, Лошади и Тарзанка',
-    basePrice: 5500,
-    program: ['Трансфер на Хунзахское плато', 'Конная прогулка по плато', 'Зиплайн в Матласе', 'Прыжок с тарзанки у водопада Тобот', 'Обед в горном кафе']
-  },
-  'adv-day-4': {
-    id: 'adv-day-4',
-    title: 'Багги, Хучни и Лунь',
-    basePrice: 5500,
-    program: ['Трансфер в Дербентский район', 'Заезд на багги по бездорожью', 'Посещение водопада в Хучни', 'Осмотр экраноплана «Лунь»', 'Обед у Каспия']
-  },
-  'adv-day-5': {
-    id: 'adv-day-5',
-    title: 'Избербаш Параплан',
-    basePrice: 5500,
-    program: ['Трансфер на гору Пушкин-Тау', 'Подготовка параплана и инструктаж', 'Тандемный полет над морем', 'Фотосессия на вершине', 'Обед в Избербаше']
-  },
-  'adventure-full-5days': {
-    id: 'adventure-full-5days',
-    title: 'ЭКСТРИМ-МАРАФОН (5 дней)',
-    basePrice: 25000, // Примерная цена за 5 дней
-    program: ['День 1: Сулак и Нохьо', 'День 2: Рафтинг и Гоор', 'День 3: Хунзах и Тарзанка', 'День 4: Багги и Лунь', 'День 5: Параплан в Избербаше', 'Проживание и трансферы включены']
-  }
 };
 
 export default function GuidePage({ selectedSectionData }: any) {
@@ -78,7 +49,7 @@ export default function GuidePage({ selectedSectionData }: any) {
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Покори бурную горную реку! Командный сплав по маршрутам разной сложности.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сплавы по горным рекам Дагестана — это незабываемый опыт. Мы организуем туры по реке Аварское Койсу, предлагая маршруты как для новичков, так и для опытных рафтеров. Предоставляется всё необходимое оборудование и сопровождение опытных инструкторов.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: База «Остров Рафт» (Шамильский район)</p>
-            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-2')} />
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-2')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-2'])} />
           </section>
 
           <section style={{ marginBottom: '48px' }}>
@@ -86,7 +57,7 @@ export default function GuidePage({ selectedSectionData }: any) {
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>За рулем мощного квадроцикла по самым диким тропам. Крутые подъемы, спуски и виды, от которых захватывает дух.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Почувствуйте полный контроль над своим приключением! Мы предлагаем прогулки на квадроциклах по горным маршрутам Буйнакского района и других локаций. Выбирайте тур по душе: от коротких заездов до многодневных экспедиций.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Хучни, Дербент</p>
-            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-4')} />
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-4')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-4'])} />
           </section>
 
           <section style={{ marginBottom: '48px' }}>
@@ -94,7 +65,7 @@ export default function GuidePage({ selectedSectionData }: any) {
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Взлети над горами и морем! Тандемный полет с инструктором — самый безопасный способ ощутить свободу.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Увидеть Дагестан таким, каким его видят только птицы. Мы организуем тандем-полеты на параплане с опытными инструкторами в окрестностях Избербаша, со знаменитой горы Пушкин-Тау.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Гора Пушкин-Тау (г. Избербаш)</p>
-            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-5')} />
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-5')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-5'])} />
           </section>
 
           <section style={{ marginBottom: '48px' }}>
@@ -102,7 +73,7 @@ export default function GuidePage({ selectedSectionData }: any) {
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Готовы шагнуть в пропасть? Скоростной спуск по тросу или затяжной прыжок с веревкой.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Для самых смелых! Попробуйте скоростной спуск на зиплайне в Матласе или прямо над Сулакским каньоном. А если этого мало — совершите прыжок с тарзанки со 100-метровой скалы водопада Тобот.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Зиплайн: Матлас, Тарзанка: водопад Тобот</p>
-            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-3')} />
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-3')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-3'])} />
           </section>
 
           <section style={{ marginBottom: '64px' }}>
@@ -110,7 +81,7 @@ export default function GuidePage({ selectedSectionData }: any) {
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Проверь себя на прочность! Уникальный скальный маршрут со страховкой прямо над бирюзовой водой Сулака.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>«Виа феррата» — это скальная тропа, оборудованная металлическими скобами и страховочным тросом. Вам предстоит карабкаться вдоль отвесной скалы и проходить по подвесным мостам на высоте.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Развлекательный комплекс «Нохьо», «Главрыба» (Сулакский каньон)</p>
-            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-1')} />
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-1')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-1'])} />
           </section>
 
           <div style={{ marginTop: '80px', padding: '32px', borderRadius: '16px', background: '#f9fafb', borderLeft: '4px solid #ef4444' }}>
@@ -121,12 +92,12 @@ export default function GuidePage({ selectedSectionData }: any) {
           </div>
 
         </div>
+        
+        {/* Модалка бронирования */}
+        <BookingModal tour={selectedTour} onClose={() => setSelectedTour(null)} />
       </>
-      );
+    );
   }
-  
-  {/* Рендер модалки бронирования */}
-  <BookingModal tour={selectedTour} onClose={() => setSelectedTour(null)} />
 
   return (
     <>
