@@ -128,7 +128,7 @@ export default function GuidePage({ selectedSectionData }: any) {
           Скоро здесь появится подробная информация о культурных, гастрономических и семейных путешествиях по Дагестану.
         </p>
         <p style={{ marginTop: '20px', color: '#6b7280' }}>
-          А пока вы можете посмотреть наши <Link href="/guide" style={{ color: '#064e3b', textDecoration: 'underline' }>Приключения</Link>.
+          А пока вы можете посмотреть наши <Link href="/guide" style={{ color: '#064e3b', textDecoration: 'underline' }}>Приключения</Link>.
         </p>
       </div>
     </>
