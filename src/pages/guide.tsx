@@ -2,6 +2,7 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { TOUR_ROUTES } from '@/data/routes';
 import BookingModal from '@/components/BookingModal';
 
@@ -15,6 +16,14 @@ const ADVENTURE_TOURS_DATA: Record<string, any> = {
   'adventure-full-5days': { id: 'adventure-full-5days', title: 'ЭКСТРИМ-МАРАФОН (5 дней)', basePrice: 25000, program: ['День 1: Сулак и Нохьо', 'День 2: Рафтинг и Гоор', 'День 3: Хунзах и Тарзанка', 'День 4: Багги и Лунь', 'День 5: Параплан в Избербаше', 'Проживание и трансферы включены'] }
 };
 
+
+// Список всех разделов
+const SECTIONS = [
+  { id: 'adventures', title: 'Приключения' },
+  { id: 'culture', title: 'Культура' },
+  { id: 'gastronomy', title: 'Гастротуры' },
+  { id: 'family', title: 'Для всей семьи' }
+];
 
 // Компонент карточки тура (для Приключений)
 const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
@@ -46,39 +55,49 @@ const InfoCard = ({ title, description, icon }: { title: string; description: st
   </div>
 );
 
-export default function GuidePage({ selectedSectionData }: any) {
+export default function GuidePage() {
+  const router = useRouter();
   const [selectedTour, setSelectedTour] = useState<any>(null);
   
-  // ЖЕСТКАЯ ЛОГИКА ОПРЕДЕЛЕНИЯ РАЗДЕЛА
-  // Если данные пришли извне - берем их title. Если нет - ставим "Приключения".
-  // Добавляем trim() и проверку на пустую строку для надежности.
-  // Надежное определение текущего раздела
-  let currentTitle = 'Приключения'; // По умолчанию
-  
-  if (selectedSectionData) {
-    // Пробуем взять title
-    if (selectedSectionData.title) {
-      currentTitle = String(selectedSectionData.title).trim();
-    } 
-    // Если title нет, но есть id - пробуем сопоставить
-    else if (selectedSectionData.id) {
-      const idMap: Record<string, string> = {
-        'adventures': 'Приключения',
-        'culture': 'Культура',
-        'gastronomy': 'Гастротуры',
-        'family': 'Для всей семьи'
-      };
-      currentTitle = idMap[selectedSectionData.id] || 'Приключения';
-    }
-  }
+  // Читаем раздел из URL (?section=...) или ставим "adventures" по умолчанию
+  const sectionId = (router.query.section as string) || 'adventures';
+  const currentSection = SECTIONS.find(s => s.id === sectionId) || SECTIONS[0];
+  const currentTitle = currentSection.title;
 
-  // Для отладки (можно удалить потом)
-  
+  // Функция переключения раздела
+  const switchSection = (id: string) => {
+    router.push({ pathname: '/guide', query: { section: id } }, undefined, { shallow: true });
+  };
+
+  // Кнопки навигации по разделам
+  const SectionTabs = () => (
+    <div style={{ display: 'flex', gap: '8px', marginBottom: '32px', flexWrap: 'wrap' }}>
+      {SECTIONS.map(sec => (
+        <button 
+          key={sec.id}
+          onClick={() => switchSection(sec.id)}
+          style={{
+            padding: '10px 20px',
+            borderRadius: '24px',
+            border: 'none',
+            background: sec.id === sectionId ? '#064e3b' : '#f3f4f6',
+            color: sec.id === sectionId ? '#fff' : '#374151',
+            fontWeight: sec.id === sectionId ? '700' : '500',
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            transition: 'all 0.2s'
+          }}
+        >
+          {sec.title}
+        </button>
+      ))}
+    </div>
+  );
 
   const BackButton = () => (
-    <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>
-      ← Назад
-    </button>
+    <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', marginBottom: '20px', textDecoration: 'none' }}>
+      ← На главную
+    </Link>
   );
 
   // 1. РАЗДЕЛ ПРИКЛЮЧЕНИЯ
@@ -86,14 +105,9 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Приключения | EasyGo</title></Head>
-        
-        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
-        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
-          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
-          <strong>currentTitle:</strong> "{currentTitle}"
-        </div>
-<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+          <BackButton />
+          <SectionTabs />
           
           <section style={{ marginBottom: '48px' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Рафтинг по Аварскому Койсу</h2>
@@ -153,18 +167,11 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Культура | EasyGo</title></Head>
-        
-        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
-        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
-          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
-          <strong>currentTitle:</strong> "{currentTitle}"
-        </div>
-<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+          <BackButton />
+          <SectionTabs />
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Культурное наследие Дагестана</h1>
-          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>
-            Дагестан — это живая история. Древние ремесла, уникальные промыслы и тысячелетние традиции ждут своих исследователей.
-          </p>
+          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Дагестан — это живая история. Древние ремесла, уникальные промыслы и тысячелетние традиции ждут своих исследователей.</p>
           <InfoCard icon="💍" title="Кубачи: Легенды в серебре" description="Посетите легендарный аул-крепость, чьи ювелирные изделия и оружие хранятся в Лувре и Эрмитаже. Кубачи — крупнейший на Кавказе центр художественной обработки металла." />
           <InfoCard icon="" title="Унцукуль: Узоры на дереве" description="Узнайте секрет уникальной унцукульской насечки металлом по дереву. Посетите Унцукульскую художественную фабрику, где есть музей и цеха." />
           <InfoCard icon="" title="Ковры Дагестана" description="Откройте мир дагестанских ковров ручной работы на старинных фабриках и в частных мастерских. Дагестанский ковер — это бренд, известный во всем мире." />
@@ -179,21 +186,14 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Гастротуры | EasyGo</title></Head>
-        
-        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
-        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
-          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
-          <strong>currentTitle:</strong> "{currentTitle}"
-        </div>
-<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+          <BackButton />
+          <SectionTabs />
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Вкус настоящего Дагестана</h1>
-          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>
-            Дагестанская кухня — это отдельный вид искусства. От ароматного хинкала до сладкого урбеча.
-          </p>
+          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Дагестанская кухня — это отдельный вид искусства. От ароматного хинкала до сладкого урбеча.</p>
           <InfoCard icon="🥟" title="Хинкал: Главное блюдо" description="Забудьте всё, что вы знали о хинкали! Попробуйте пышные кусочки теста с мясом, бульоном и соусом. В каждом районе Дагестана его готовят по-своему." />
           <InfoCard icon="" title="Чуду: Тонкие пироги" description="Горячие, только со сковороды, тонкие пироги с самыми разными начинками: с мясом, творогом, зеленью или тыквой." />
-          <InfoCard icon="🥟" title="Курзе: Пельмени «косичкой»" description="Похожи на пельмени, но сочнее и красивее. Главный секрет — в начинке и особом шве в виде косички." />
+          <InfoCard icon="" title="Курзе: Пельмени косичкой" description="Похожи на пельмени, но сочнее и красивее. Главный секрет — в начинке и особом шве в виде косички." />
           <InfoCard icon="" title="Урбеч: Энергия гор" description="Натуральная паста из перетертых орехов или семян. Дагестанский суперфуд, который смешивают с медом и сливочным маслом." />
         </div>
       </>
@@ -205,36 +205,20 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Для всей семьи | EasyGo</title></Head>
-        
-        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
-        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
-          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
-          <strong>currentTitle:</strong> "{currentTitle}"
-        </div>
-<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+          <BackButton />
+          <SectionTabs />
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Отдых для всех возрастов</h1>
-          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>
-            Безопасные, интересные и комфортные маршруты, которые понравятся и детям, и взрослым.
-          </p>
+          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Безопасные, интересные и комфортные маршруты, которые понравятся и детям, и взрослым.</p>
           <InfoCard icon="🏰" title="Дербент: 5000 лет истории" description="Прикоснитесь к стенам древнейшей цитадели России. Крепость Нарын-Кала, старинные магалы и Джума-мечеть." />
           <InfoCard icon="️" title="Сулакский каньон" description="Один из глубочайших каньонов мира (1920 м!). Прогулка на катере по бирюзовой реке и качели над обрывом." />
           <InfoCard icon="🏜️" title="Бархан Сарыкум" description="Настоящая пустыня посреди гор. Огромная песчаная гора высотой 262 метра с уникальной флорой и фауной." />
-          <InfoCard icon="️" title="Аулы-легенды" description="Посетите «дагестанский Мачу-Пикчу» — аул-призрак Гамсутль, и исторический Гуниб с крепостью Шамиля." />
-          <InfoCard icon="" title="Гоор и Кахиб" description="Страна башен. Средневековые оборонительные башни на краю пропасти и знаменитый «Язык тролля»." />
+          <InfoCard icon="️" title="Аулы-легенды" description="Посетите дагестанский Мачу-Пикчу — аул-призрак Гамсутль, и исторический Гуниб с крепостью Шамиля." />
+          <InfoCard icon="" title="Гоор и Кахиб" description="Страна башен. Средневековые оборонительные башни на краю пропасти и знаменитый Язык тролля." />
         </div>
       </>
     );
   }
 
-  // ЗАГЛУШКА (если вдруг title не совпал ни с одним вариантом)
-  return (
-    <>
-      <Head><title>Гид по Дагестану | EasyGo</title></Head>
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '20px' }}>Раздел не найден</h1>
-        <Link href="/" style={{ display: 'inline-block', marginTop: '20px', color: '#064e3b', textDecoration: 'underline' }}>← На главную</Link>
-      </div>
-    </>
-  );
+  return null;
 }
