@@ -85,7 +85,13 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Приключения | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
+        
+        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
+        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
+          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
+          <strong>currentTitle:</strong> "{currentTitle}"
+        </div>
+<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           
           <section style={{ marginBottom: '48px' }}>
@@ -146,7 +152,13 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Культура | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
+        
+        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
+        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
+          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
+          <strong>currentTitle:</strong> "{currentTitle}"
+        </div>
+<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Культурное наследие Дагестана</h1>
           <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>
@@ -166,7 +178,13 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Гастротуры | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
+        
+        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
+        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
+          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
+          <strong>currentTitle:</strong> "{currentTitle}"
+        </div>
+<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Вкус настоящего Дагестана</h1>
           <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>
@@ -186,7 +204,13 @@ export default function GuidePage({ selectedSectionData }: any) {
     return (
       <>
         <Head><title>Для всей семьи | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
+        
+        {/* ОТЛАДОЧНАЯ ПАНЕЛЬ - УДАЛИТЬ ПОСЛЕ ПРОВЕРКИ */}
+        <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
+          <strong>DEBUG:</strong> selectedSectionData = {JSON.stringify(selectedSectionData)}<br/>
+          <strong>currentTitle:</strong> "{currentTitle}"
+        </div>
+<div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}><BackButton /></div>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Отдых для всех возрастов</h1>
           <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>
