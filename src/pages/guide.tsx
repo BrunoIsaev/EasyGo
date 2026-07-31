@@ -14,17 +14,19 @@ const ADVENTURE_TOURS_DATA: Record<string, any> = {
 };
 
 
+// Компонент карточки тура (с темно-зеленым кружком)
 const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
   if (!route) return null;
   const cleanTitle = route.title.replace(/^День \d+:\s*/, '');
   return (
     <div 
       style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
-      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#10b981'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
+      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#064e3b'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
       onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
       onClick={onClick}
     >
-      <div style={{ width: '40px', height: '40px', background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '1.2rem', flexShrink: 0 }}></div>
+      {/* Темно-зеленый кружок вместо бледного */}
+      <div style={{ width: '40px', height: '40px', background: '#064e3b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
       <div style={{ flex: 1 }}>
         <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>{cleanTitle}</h3>
         <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>{route.description}</p>
@@ -34,15 +36,23 @@ const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
   );
 };
 
-export default function GuidePage({ selectedSectionData }: any) {
+export default function GuidePage({ selectedSectionData, renderDetailView, renderGridView }: any) {
   const [selectedTour, setSelectedTour] = useState<any>(null);
-  const showAdventures = !selectedSectionData || selectedSectionData.title === 'Приключения';
   
-  if (showAdventures) {
+  // Если выбрана секция "Приключения" - показываем наш новый дизайн
+  if (selectedSectionData && selectedSectionData.title === 'Приключения') {
     return (
       <>
         <Head><title>Приключения | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+        
+        {/* Кнопка Назад */}
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 0' }}>
+          <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0' }}>
+            ← Назад
+          </button>
+        </div>
+
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 40px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           
           <section style={{ marginBottom: '48px' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Рафтинг по Аварскому Койсу</h2>
@@ -99,10 +109,15 @@ export default function GuidePage({ selectedSectionData }: any) {
     );
   }
 
+  // Для ВСЕХ остальных разделов (Культура, Гастро, Семья) используем СТАРЫЙ рендер
   return (
     <>
-      <Head><title>Гид по Дагестану | EasyGo</title></Head>
-      <div style={{ padding: '100px 20px', textAlign: 'center' }}><h1>Раздел загружается...</h1></div>
+      <Head>
+        <title>{selectedSectionData ? selectedSectionData.title : 'Гид по Дагестану'} | EasyGo</title>
+      </Head>
+      <main style={{ minHeight: '100vh', paddingTop: '80px', paddingBottom: '40px', paddingLeft: '20px', paddingRight: '20px' }}>
+        {selectedSectionData ? renderDetailView(selectedSectionData) : renderGridView()}
+      </main>
     </>
   );
 }
