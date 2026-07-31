@@ -95,9 +95,9 @@ export default function GuidePage() {
   );
 
   const BackButton = () => (
-    <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', marginBottom: '20px', textDecoration: 'none' }}>
-      ← На главную
-    </Link>
+    <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0' }} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', marginBottom: '20px', textDecoration: 'none' }}>
+      ← Назад
+    </button>
   );
 
   // 1. РАЗДЕЛ ПРИКЛЮЧЕНИЯ
@@ -107,7 +107,6 @@ export default function GuidePage() {
         <Head><title>Приключения | EasyGo</title></Head>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           <BackButton />
-          <SectionTabs />
           
           <section style={{ marginBottom: '48px' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Рафтинг по Аварскому Койсу</h2>
@@ -169,7 +168,6 @@ export default function GuidePage() {
         <Head><title>Культура | EasyGo</title></Head>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           <BackButton />
-          <SectionTabs />
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Культурное наследие Дагестана</h1>
           <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Дагестан — это живая история. Древние ремесла, уникальные промыслы и тысячелетние традиции ждут своих исследователей.</p>
           <InfoCard icon="💍" title="Кубачи: Легенды в серебре" description="Посетите легендарный аул-крепость, чьи ювелирные изделия и оружие хранятся в Лувре и Эрмитаже. Кубачи — крупнейший на Кавказе центр художественной обработки металла." />
@@ -188,7 +186,6 @@ export default function GuidePage() {
         <Head><title>Гастротуры | EasyGo</title></Head>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           <BackButton />
-          <SectionTabs />
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Вкус настоящего Дагестана</h1>
           <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Дагестанская кухня — это отдельный вид искусства. От ароматного хинкала до сладкого урбеча.</p>
           <InfoCard icon="🥟" title="Хинкал: Главное блюдо" description="Забудьте всё, что вы знали о хинкали! Попробуйте пышные кусочки теста с мясом, бульоном и соусом. В каждом районе Дагестана его готовят по-своему." />
@@ -207,7 +204,6 @@ export default function GuidePage() {
         <Head><title>Для всей семьи | EasyGo</title></Head>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
           <BackButton />
-          <SectionTabs />
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Отдых для всех возрастов</h1>
           <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Безопасные, интересные и комфортные маршруты, которые понравятся и детям, и взрослым.</p>
           <InfoCard icon="🏰" title="Дербент: 5000 лет истории" description="Прикоснитесь к стенам древнейшей цитадели России. Крепость Нарын-Кала, старинные магалы и Джума-мечеть." />
