@@ -51,16 +51,28 @@ export default function GuidePage({ selectedSectionData }: any) {
   // ЖЕСТКАЯ ЛОГИКА ОПРЕДЕЛЕНИЯ РАЗДЕЛА
   // Если данные пришли извне - берем их title. Если нет - ставим "Приключения".
   // Добавляем trim() и проверку на пустую строку для надежности.
-  const rawTitle = selectedSectionData?.title;
-  const currentTitle = (rawTitle && String(rawTitle).trim() !== '') ? String(rawTitle).trim() : 'Приключения';
+  // Надежное определение текущего раздела
+  let currentTitle = 'Приключения'; // По умолчанию
+  
+  if (selectedSectionData) {
+    // Пробуем взять title
+    if (selectedSectionData.title) {
+      currentTitle = String(selectedSectionData.title).trim();
+    } 
+    // Если title нет, но есть id - пробуем сопоставить
+    else if (selectedSectionData.id) {
+      const idMap: Record<string, string> = {
+        'adventures': 'Приключения',
+        'culture': 'Культура',
+        'gastronomy': 'Гастротуры',
+        'family': 'Для всей семьи'
+      };
+      currentTitle = idMap[selectedSectionData.id] || 'Приключения';
+    }
+  }
 
   // Для отладки (можно удалить потом)
-  useEffect(() => {
-    console.log('GuidePage Render:', { 
-      receivedData: selectedSectionData, 
-      calculatedTitle: currentTitle 
-    });
-  }, [currentTitle]);
+  
 
   const BackButton = () => (
     <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>
@@ -196,7 +208,6 @@ export default function GuidePage({ selectedSectionData }: any) {
       <Head><title>Гид по Дагестану | EasyGo</title></Head>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', textAlign: 'center' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '20px' }}>Раздел не найден</h1>
-        <p style={{ color: #6b7280, marginBottom: 20px }}>Получен заголовок: "{currentTitle}"</p>
         <Link href="/" style={{ display: 'inline-block', marginTop: '20px', color: '#064e3b', textDecoration: 'underline' }}>← На главную</Link>
       </div>
     </>
