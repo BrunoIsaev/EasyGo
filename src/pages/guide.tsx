@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState } from 'react';
 import { TOUR_ROUTES } from '@/data/routes';
 import BookingModal from '@/components/BookingModal';
