@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TOUR_ROUTES } from '@/data/routes';
 import BookingModal from '@/components/BookingModal';
@@ -48,8 +48,19 @@ const InfoCard = ({ title, description, icon }: { title: string; description: st
 export default function GuidePage({ selectedSectionData }: any) {
   const [selectedTour, setSelectedTour] = useState<any>(null);
   
-  // Определяем текущий раздел: если ничего не выбрано, ставим "Приключения"
-  const currentTitle = selectedSectionData ? selectedSectionData.title : 'Приключения';
+  // ЖЕСТКАЯ ЛОГИКА ОПРЕДЕЛЕНИЯ РАЗДЕЛА
+  // Если данные пришли извне - берем их title. Если нет - ставим "Приключения".
+  // Добавляем trim() и проверку на пустую строку для надежности.
+  const rawTitle = selectedSectionData?.title;
+  const currentTitle = (rawTitle && String(rawTitle).trim() !== '') ? String(rawTitle).trim() : 'Приключения';
+
+  // Для отладки (можно удалить потом)
+  useEffect(() => {
+    console.log('GuidePage Render:', { 
+      receivedData: selectedSectionData, 
+      calculatedTitle: currentTitle 
+    });
+  }, [currentTitle]);
 
   const BackButton = () => (
     <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>
@@ -170,7 +181,7 @@ export default function GuidePage({ selectedSectionData }: any) {
             Безопасные, интересные и комфортные маршруты, которые понравятся и детям, и взрослым.
           </p>
           <InfoCard icon="🏰" title="Дербент: 5000 лет истории" description="Прикоснитесь к стенам древнейшей цитадели России. Крепость Нарын-Кала, старинные магалы и Джума-мечеть." />
-          <InfoCard icon="🏞️" title="Сулакский каньон" description="Один из глубочайших каньонов мира (1920 м!). Прогулка на катере по бирюзовой реке и качели над обрывом." />
+          <InfoCard icon="️" title="Сулакский каньон" description="Один из глубочайших каньонов мира (1920 м!). Прогулка на катере по бирюзовой реке и качели над обрывом." />
           <InfoCard icon="🏜️" title="Бархан Сарыкум" description="Настоящая пустыня посреди гор. Огромная песчаная гора высотой 262 метра с уникальной флорой и фауной." />
           <InfoCard icon="️" title="Аулы-легенды" description="Посетите 'дагестанский Мачу-Пикчу' — аул-призрак Гамсутль, и исторический Гуниб с крепостью Шамиля." />
           <InfoCard icon="" title="Гоор и Кахиб" description="Страна башен. Средневековые оборонительные башни на краю пропасти и знаменитый 'Язык тролля'." />
@@ -179,12 +190,13 @@ export default function GuidePage({ selectedSectionData }: any) {
     );
   }
 
-  // ЗАГЛУШКА (на всякий случай)
+  // ЗАГЛУШКА (если вдруг title не совпал ни с одним вариантом)
   return (
     <>
       <Head><title>Гид по Дагестану | EasyGo</title></Head>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '20px' }}>Выберите раздел выше</h1>
+        <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '20px' }}>Раздел не найден</h1>
+        <p style={{ color: '#6b7280', marginBottom: '20px' }}>Получен заголовок: "{currentTitle}"</p>
         <Link href="/" style={{ display: 'inline-block', marginTop: '20px', color: '#064e3b', textDecoration: 'underline' }}>← На главную</Link>
       </div>
     </>
