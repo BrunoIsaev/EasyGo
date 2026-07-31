@@ -46,6 +46,8 @@ const InfoCard = ({ title, description, icon }: { title: string; description: st
 );
 
 export default function GuidePage({ selectedSectionData }: any) {
+  // Если раздел не выбран, по умолчанию показываем "Приключения"
+  const activeSection = selectedSectionData || { title: 'Приключения' };
   const [selectedTour, setSelectedTour] = useState<any>(null);
   
   const BackButton = () => (
@@ -55,7 +57,7 @@ export default function GuidePage({ selectedSectionData }: any) {
   );
 
   // 1. РАЗДЕЛ ПРИКЛЮЧЕНИЯ (с модалкой и бронированием)
-  if (selectedSectionData && selectedSectionData.title === 'Приключения') {
+  if (activeSection.title === 'Приключения') {
     return (
       <>
         <Head><title>Приключения | EasyGo</title></Head>
@@ -116,7 +118,7 @@ export default function GuidePage({ selectedSectionData }: any) {
   }
 
   // 2. РАЗДЕЛ КУЛЬТУРА (с оригинальными текстами)
-  if (selectedSectionData && selectedSectionData.title === 'Культура') {
+  if (activeSection.title === 'Культура') {
     return (
       <>
         <Head><title>Культура | EasyGo</title></Head>
@@ -137,7 +139,7 @@ export default function GuidePage({ selectedSectionData }: any) {
   }
 
   // 3. РАЗДЕЛ ГАСТРОНОМИЯ (с оригинальными текстами)
-  if (selectedSectionData && selectedSectionData.title === 'Гастротуры') {
+  if (activeSection.title === 'Гастротуры') {
     return (
       <>
         <Head><title>Гастротуры | EasyGo</title></Head>
@@ -158,7 +160,7 @@ export default function GuidePage({ selectedSectionData }: any) {
   }
 
   // 4. РАЗДЕЛ ДЛЯ ВСЕЙ СЕМЬИ (с оригинальными текстами)
-  if (selectedSectionData && selectedSectionData.title === 'Для всей семьи') {
+  if (activeSection.title === 'Для всей семьи') {
     return (
       <>
         <Head><title>Для всей семьи | EasyGo</title></Head>
