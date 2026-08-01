@@ -4,6 +4,26 @@ import { useRouter } from 'next/router';
 import { TOUR_ROUTES } from '@/data/routes';
 import BookingModal from '@/components/BookingModal';
 
+// Локальные маршруты для гастрономии (не трогаем routes.ts)
+const GASTRO_ROUTES = [
+  {
+    id: 'gas-gerey',
+    title: 'Семейная винодельня «Герей-Тюз»',
+    description: 'Вино, крепость и мастер-классы по чуду',
+    tags: ['gastronomy'],
+    duration: '1 день',
+    difficulty: 'Легкий'
+  },
+  {
+    id: 'gas-summer',
+    title: 'Дагестанское лето: от садов до вершин',
+    description: 'Сады, водопад и Царская поляна',
+    tags: ['gastronomy'],
+    duration: '1 день',
+    difficulty: 'Легкий'
+  }
+];
+
 
 const ADVENTURE_TOURS_DATA: Record<string, any> = {
   'adv-day-1': { id: 'adv-day-1', title: 'Джиппинг, Нохьо и Сулак', basePrice: 5500, program: ['Трансфер до Сулакского каньона', 'Посещение пещеры Нохьо и Виа Феррата', 'Прогулка на катерах по бирюзовой воде', 'Обед в ресторане «Главрыба»', 'Экскурсия на бархан Сарыкум'] },
