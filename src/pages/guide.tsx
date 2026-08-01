@@ -169,7 +169,19 @@ export default function GuidePage() {
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Погружение в мир виноградарства, дегустация и история Дербентского района.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Вас ждет увлекательное путешествие на родину дагестанского вина. Вы посетите виноградники «Герей-Тюз», где узнаете о сортах Молдова, Мускат Италия и Саперави, а также увидите процесс ручного сбора урожая. Маршрут включает посещение легендарной Крепости семи братьев, национальный обед и мастер-класс по приготовлению чуду. Завершит день прогулка к Ханagскому водопаду и осмотр древнего арочного моста Зюртинг.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Винодельня «Герей-Тюз», Крепость семи братьев, Ханagский водопад, Мост Зюртинг</p>
-            <TourCard route={{ title: 'Семейная винодельня «Герей-Тюз»', description: 'Вино, крепость и мастер-классы' }} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['gas-gerey'])} />
+            <div 
+      style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
+      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#064e3b'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
+      onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
+      onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['gas-gerey'])}
+    >
+      <div style={{ width: '40px', height: '40px', background: '#064e3b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
+      <div style={{ flex: 1 }}>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>Семейная винодельня «Герей-Тюз»</h3>
+        <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>Вино, крепость и мастер-классы</p>
+      </div>
+      <div style={{ color: '#9ca3af', fontSize: '1.2rem' }}>→</div>
+    </div>
           </section>
 
           <section style={{ marginBottom: '48px' }}>
@@ -177,7 +189,19 @@ export default function GuidePage() {
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Гимринский перевал, подземный водопад и абрикосовые сады Гуниба.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Этот маршрут раскрывает природное разнообразие горного Дагестана. Вы проедете через Гимринский тоннель, увидите оборонительную башню и Ирганайское водохранилище. Главная изюминка — посещение фруктовых садов в Гунибе, где летом можно попробовать сладчайшие абрикосы сортов «Шалах» и «Краснощёкий». Программа также включает единственный в Дагестане подземный Салтинский водопад, прогулку по природному парку «Верхний Гуниб» (Царская поляна) и визит в историко-краеведческий музей.</p>
             <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Гимринский тоннель, Салтинский водопад, Абрикосовые сады Гуниба, Природный парк «Верхний Гуниб»</p>
-            <TourCard route={{ title: 'Дагестанское лето: от садов до вершин', description: 'Сады, водопад и Царская поляна' }} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['gas-summer'])} />
+            <div 
+      style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
+      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#064e3b'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
+      onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
+      onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['gas-summer'])}
+    >
+      <div style={{ width: '40px', height: '40px', background: '#064e3b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.2rem', flexShrink: 0 }}></div>
+      <div style={{ flex: 1 }}>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>Дагестанское лето: от садов до вершин</h3>
+        <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>Сады, водопад и Царская поляна</p>
+      </div>
+      <div style={{ color: '#9ca3af', fontSize: '1.2rem' }}>→</div>
+    </div>
           </section>
         </SectionContainer>
       </>
