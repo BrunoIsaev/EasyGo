@@ -1,6 +1,5 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { TOUR_ROUTES } from '@/data/routes';
 import BookingModal from '@/components/BookingModal';
@@ -16,15 +15,7 @@ const ADVENTURE_TOURS_DATA: Record<string, any> = {
 };
 
 
-// Список всех разделов
-const SECTIONS = [
-  { id: 'adventures', title: 'Приключения' },
-  { id: 'culture', title: 'Культура' },
-  { id: 'gastronomy', title: 'Гастротуры' },
-  { id: 'family', title: 'Для всей семьи' }
-];
-
-// Компонент карточки тура (для Приключений)
+// Компонент карточки тура (только для Приключений)
 const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
   if (!route) return null;
   const cleanTitle = route.title.replace(/^День \d+:\s*/, '');
@@ -45,66 +36,33 @@ const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
   );
 };
 
-// Компонент информационной карточки (для Культуры, Гастро, Семьи)
-const InfoCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => (
-  <div style={{ padding: '24px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '16px', marginBottom: '20px' }}>
-    <div style={{ fontSize: '2rem', marginBottom: '12px' }}>{icon}</div>
-    <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: '700', color: '#111' }}>{title}</h3>
-    <p style={{ margin: 0, color: '#4b5563', lineHeight: '1.6' }}>{description}</p>
-  </div>
-);
-
 export default function GuidePage() {
   const router = useRouter();
   const [selectedTour, setSelectedTour] = useState<any>(null);
   
   // Читаем раздел из URL (?section=...) или ставим "adventures" по умолчанию
   const sectionId = (router.query.section as string) || 'adventures';
-  const currentSection = SECTIONS.find(s => s.id === sectionId) || SECTIONS[0];
-  const currentTitle = currentSection.title;
+  
+  const BackButton = () => (
+    <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>
+      ← Назад
+    </button>
+  );
 
-  // Функция переключения раздела
-  const switchSection = (id: string) => {
-    router.push({ pathname: '/guide', query: { section: id } }, undefined, { shallow: true });
-  };
-
-  // Кнопки навигации по разделам
-  const SectionTabs = () => (
-    <div style={{ display: 'flex', gap: '8px', marginBottom: '32px', flexWrap: 'wrap' }}>
-      {SECTIONS.map(sec => (
-        <button 
-          key={sec.id}
-          onClick={() => switchSection(sec.id)}
-          style={{
-            padding: '10px 20px',
-            borderRadius: '24px',
-            border: 'none',
-            background: sec.id === sectionId ? '#064e3b' : '#f3f4f6',
-            color: sec.id === sectionId ? '#fff' : '#374151',
-            fontWeight: sec.id === sectionId ? '700' : '500',
-            cursor: 'pointer',
-            fontSize: '0.95rem',
-            transition: 'all 0.2s'
-          }}
-        >
-          {sec.title}
-        </button>
-      ))}
+  // Общий стиль для контейнера раздела (как в Приключениях)
+  const SectionContainer = ({ children }: { children: React.ReactNode }) => (
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+      <BackButton />
+      {children}
     </div>
   );
 
-  const BackButton = () => (
-    <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>← Назад</button>
-  );
-
-  // 1. РАЗДЕЛ ПРИКЛЮЧЕНИЯ
-  if (currentTitle === 'Приключения') {
+  // 1. РАЗДЕЛ ПРИКЛЮЧЕНИЯ (оставляем как есть)
+  if (sectionId === 'adventures') {
     return (
       <>
         <Head><title>Приключения | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
-          <BackButton />
-          
+        <SectionContainer>
           <section style={{ marginBottom: '48px' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Рафтинг по Аварскому Койсу</h2>
             <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Покори бурную горную реку! Командный сплав по маршрутам разной сложности.</p>
@@ -151,64 +109,129 @@ export default function GuidePage() {
             <p style={{ lineHeight: '1.6', marginBottom: '24px', color: '#4b5563' }}>Зачем выбирать что-то одно? Пройдите весь путь экстремального Дагестана за одну поездку. Мы взяли лучшие активности — от бурного рафтинга и скальных троп до полета над морем — и собрали их в идеальный маршрут. Трансфер, гиды, оборудование и эмоции включены.</p>
             <button onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adventure-full-5days'])} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#ef4444', color: '#fff', fontWeight: 'bold', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>[ Выбрать Экстрим-Марафон → ]</button>
           </div>
-
-        </div>
+        </SectionContainer>
         <BookingModal tour={selectedTour} onClose={() => setSelectedTour(null)} />
       </>
     );
   }
 
-  // 2. РАЗДЕЛ КУЛЬТУРА
-  if (currentTitle === 'Культура') {
+  // 2. РАЗДЕЛ КУЛЬТУРА (формат идентичен Приключениям: заголовок, лид, текст, ключевые места)
+  if (sectionId === 'culture') {
     return (
       <>
         <Head><title>Культура | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
-          <BackButton />
-          <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Культурное наследие Дагестана</h1>
-          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Дагестан — это живая история. Древние ремесла, уникальные промыслы и тысячелетние традиции ждут своих исследователей.</p>
-          <InfoCard icon="💍" title="Кубачи: Легенды в серебре" description="Посетите легендарный аул-крепость, чьи ювелирные изделия и оружие хранятся в Лувре и Эрмитаже. Кубачи — крупнейший на Кавказе центр художественной обработки металла." />
-          <InfoCard icon="" title="Унцукуль: Узоры на дереве" description="Узнайте секрет уникальной унцукульской насечки металлом по дереву. Посетите Унцукульскую художественную фабрику, где есть музей и цеха." />
-          <InfoCard icon="" title="Ковры Дагестана" description="Откройте мир дагестанских ковров ручной работы на старинных фабриках и в частных мастерских. Дагестанский ковер — это бренд, известный во всем мире." />
-          <InfoCard icon="🏛️" title="Музеи: Хранители истории" description="Погрузитесь в богатое прошлое Дагестана, посетив Национальный музей РД, крепость Нарын-Кала и музей ИЗО." />
-        </div>
+        <SectionContainer>
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Кубачи: Легенды в серебре</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Посетите легендарный аул-крепость, чьи ювелирные изделия и оружие хранятся в Лувре и Эрмитаже.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Кубачи — крупнейший на Кавказе центр художественной обработки металла. Вы сможете посетить мастерские, увидеть, как рождаются шедевры, и приобрести уникальные серебряные украшения, посуду или кинжалы.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Аул Кубачи, Музей художественной обработки металла</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Унцукуль: Узоры на дереве</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Узнайте секрет уникальной унцукульской насечки металлом по дереву.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Унцукуль — родина уникального промысла. Здесь создают изделия из дерева, украшая их тончайшей орнаментальной насечкой из металла. Посетите Унцукульскую художественную фабрику, где есть музей и цеха.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Унцукульская художественная фабрика</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Ковры Дагестана</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Откройте мир дагестанских ковров ручной работы на старинных фабриках и в частных мастерских.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Дагестанский ковер — это бренд, известный во всем мире. Чтобы увидеть процесс его создания, можно посетить Межгюльскую, Ляхлинскую ковровые фабрики или частные артели Табасаранского района.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Межгюльская и Ляхлинская ковровые фабрики, Табасаранский район</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Музеи: Хранители истории</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>От сокровищ Нарын-Калы до авангарда XX века — главные музейные сокровищницы республики.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Погрузитесь в богатое прошлое Дагестана, посетив его лучшие музеи: Национальный музей РД им. А. Тахо-Годи, Музей-заповедник «Дербентская крепость Нарын-Кала», Дагестанский музей ИЗО им. П.С. Гамзатовой.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Национальный музей РД (Махачкала), Крепость Нарын-Кала (Дербент)</p>
+          </section>
+        </SectionContainer>
       </>
     );
   }
 
-  // 3. РАЗДЕЛ ГАСТРОНОМИЯ
-  if (currentTitle === 'Гастротуры') {
+  // 3. РАЗДЕЛ ГАСТРОНОМИЯ (формат идентичен Приключениям)
+  if (sectionId === 'gastronomy') {
     return (
       <>
         <Head><title>Гастротуры | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
-          <BackButton />
-          <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Вкус настоящего Дагестана</h1>
-          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Дагестанская кухня — это отдельный вид искусства. От ароматного хинкала до сладкого урбеча.</p>
-          <InfoCard icon="🥟" title="Хинкал: Главное блюдо" description="Забудьте всё, что вы знали о хинкали! Попробуйте пышные кусочки теста с мясом, бульоном и соусом. В каждом районе Дагестана его готовят по-своему." />
-          <InfoCard icon="" title="Чуду: Тонкие пироги" description="Горячие, только со сковороды, тонкие пироги с самыми разными начинками: с мясом, творогом, зеленью или тыквой." />
-          <InfoCard icon="" title="Курзе: Пельмени косичкой" description="Похожи на пельмени, но сочнее и красивее. Главный секрет — в начинке и особом шве в виде косички." />
-          <InfoCard icon="" title="Урбеч: Энергия гор" description="Натуральная паста из перетертых орехов или семян. Дагестанский суперфуд, который смешивают с медом и сливочным маслом." />
-        </div>
+        <SectionContainer>
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Хинкал: Главное блюдо Дагестана</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Забудьте всё, что вы знали о хинкали! Попробуйте пышные кусочки теста с мясом, бульоном и соусом.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Хинкал — это не пельмени, это целая философия. В каждом районе Дагестана его готовят по-своему. Блюдо всегда подается раздельно: отварное мясо, ароматный бульон, соус и сами хинкалинки.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Рестораны национальной кухни по всему Дагестану</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Чуду: Тонкие пироги с душой</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Горячие, только со сковороды, тонкие пироги с самыми разными начинками.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Чуду — это тончайшие закрытые пироги, которые жарят на сухой сковороде, а затем обильно смазывают сливочным маслом. Начинки бывают на любой вкус: с мясом, с творогом, с зеленью, с тыквой.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Семейные кафе, чайханы в горных селах</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Курзе: Дагестанские пельмени косичкой</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Похожи на пельмени, но сочнее и красивее, с особым швом в виде косички.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Главный секрет курзе — в начинке и форме. В мясной фарш часто добавляют томаты для сочности. А лепят их особым способом, защипывая край косичкой, чтобы весь бульон остался внутри.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Мастер-классы в этно-комплексах</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Урбеч: Энергия гор в одной ложке</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Натуральная паста из перетертых орехов или семян. Дагестанский суперфуд.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Урбеч — это уникальный продукт. Семена льна, абрикосовые косточки или орехи перетирают на каменных жерновах до выделения масла. Его смешивают с медом и сливочным маслом. Мощный источник энергии и отличный сувенир.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Рынки Махачкалы, частные производства в селах</p>
+          </section>
+        </SectionContainer>
       </>
     );
   }
 
-  // 4. РАЗДЕЛ ДЛЯ ВСЕЙ СЕМЬИ
-  if (currentTitle === 'Для всей семьи') {
+  // 4. РАЗДЕЛ ДЛЯ ВСЕЙ СЕМЬИ (формат идентичен Приключениям)
+  if (sectionId === 'family') {
     return (
       <>
         <Head><title>Для всей семьи | EasyGo</title></Head>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
-          <BackButton />
-          <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '32px' }}>Отдых для всех возрастов</h1>
-          <p style={{ lineHeight: '1.6', marginBottom: '32px', color: '#4b5563' }}>Безопасные, интересные и комфортные маршруты, которые понравятся и детям, и взрослым.</p>
-          <InfoCard icon="🏰" title="Дербент: 5000 лет истории" description="Прикоснитесь к стенам древнейшей цитадели России. Крепость Нарын-Кала, старинные магалы и Джума-мечеть." />
-          <InfoCard icon="️" title="Сулакский каньон" description="Один из глубочайших каньонов мира (1920 м!). Прогулка на катере по бирюзовой реке и качели над обрывом." />
-          <InfoCard icon="🏜️" title="Бархан Сарыкум" description="Настоящая пустыня посреди гор. Огромная песчаная гора высотой 262 метра с уникальной флорой и фауной." />
-          <InfoCard icon="️" title="Аулы-легенды" description="Посетите дагестанский Мачу-Пикчу — аул-призрак Гамсутль, и исторический Гуниб с крепостью Шамиля." />
-          <InfoCard icon="" title="Гоор и Кахиб" description="Страна башен. Средневековые оборонительные башни на краю пропасти и знаменитый Язык тролля." />
-        </div>
+        <SectionContainer>
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Дербент: Путешествие на 5000 лет назад</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Прикоснитесь к стенам древнейшей цитадели России, внесенной в список ЮНЕСКО.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Дербент — это живой учебник истории. Вы посетите грандиозную крепость Нарын-Кала, увидите руины древних дворцов и храмов, прогуляетесь по старинным магалам и посетите Джума-мечеть — одну из старейших в мире.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Крепость Нарын-Кала, Старый город, Джума-мечеть</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Сулакский каньон: Чудо природы</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Посмотрите на один из глубочайших каньонов мира и прокатитесь на катере по бирюзовой реке.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сулакский каньон — визитная карточка Дагестана. Его глубина достигает 1920 метров! Мы отвезем вас на лучшие смотровые площадки у поселка Дубки, где есть кафе и знаменитые качели над обрывом.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Смотровые площадки п. Дубки, Комплекс Главрыба</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Бархан Сарыкум: Пустыня в горах</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Побывайте в настоящей пустыне, не уезжая с Кавказа! Один из крупнейших песчаных барханов Евразии.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сарыкум — это уникальное чудо природы, огромная песчаная гора высотой 262 метра. Вы сможете подняться на его вершину по специальной эко-тропе. У подножия бархана расположен небольшой музей флоры и фауны.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Заповедник «Дагестанский», участок «Сарыкумские барханы»</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Аулы-легенды: Гамсутль и Гуниб</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Посетите «дагестанский Мачу-Пикчу» — аул-призрак Гамсутль, и исторический Гуниб.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Это путешествие в самое сердце истории гор. Сначала вы подниметесь к заброшенному аулу Гамсутль, который врос в вершину горы. А затем отправитесь в Гуниб — село с потрясающими видами, где можно посетить крепость Шамиля.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: с. Гамсутль, с. Гуниб</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Гоор и Кахиб: Страна башен</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сделайте фото на знаменитом «Языке тролля» и исследуйте руины древних оборонительных башен.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Старинные аулы Гоор и Кахиб — это место невероятной силы и красоты. Вы увидите средневековые оборонительные башни, стоящие на самом краю пропасти. В Гооре находится знаменитый скальный выступ, прозванный «Языком тролля».</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: с. Гоор, с. Старый Кахиб</p>
+          </section>
+        </SectionContainer>
       </>
     );
   }
