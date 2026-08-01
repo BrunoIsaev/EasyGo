@@ -311,4 +311,21 @@ export const TOUR_ROUTES: TourRoute[] = [
     duration: '1 день',
     difficulty: 'Легкий'
   },
+
+  {
+    id: 'gas-gerey',
+    title: 'Семейная винодельня «Герей-Тюз»',
+    description: 'Вино, крепость и мастер-классы по чуду',
+    tags: ['gastronomy'],
+    duration: '1 день',
+    difficulty: 'Легкий'
+  },
+  {
+    id: 'gas-summer',
+    title: 'Дагестанское лето: от садов до вершин',
+    description: 'Сады, водопад и Царская поляна',
+    tags: ['gastronomy'],
+    duration: '1 день',
+    difficulty: 'Легкий'
+  },
 ];
