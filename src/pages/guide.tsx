@@ -1,295 +1,276 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
+import Head from 'next/head';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { TOUR_ROUTES } from '@/data/routes';
+import BookingModal from '@/components/BookingModal';
 
-interface TourData {
-  id: string;
-  title: string;
-  price: number;
-  departure: string;
-  returnTime: string;
-  subtitle: string;
-  program: string[];
-}
-
-const GASTRO_TOURS: Record<string, TourData> = {
-  'gerey-tyuz': {
-    id: 'gerey-tyuz',
+// Локальные маршруты для гастрономии (не трогаем routes.ts)
+const GASTRO_ROUTES = [
+  {
+    id: 'gas-gerey',
     title: 'Семейная винодельня «Герей-Тюз»',
-    price: 5500,
-    departure: '08:00',
-    returnTime: '19:00',
-    subtitle: 'Вино, крепость и мастер-классы',
-    program: [
-      'Трансфер к виноградникам «Герей-Тюз»',
-      'Экскурсия по плантациям и история сортов (Молдова, Мускат)',
-      'Посещение легендарной Крепости семи братьев',
-      'Национальный обед и мастер-класс по приготовлению чуду',
-      'Прогулка к Ханадскому водопаду',
-      'Осмотр древнего арочного моста Зюртинг'
-    ]
+    description: 'Вино, крепость и мастер-классы по чуду',
+    tags: ['gastronomy'],
+    duration: '1 день',
+    difficulty: 'Легкий'
   },
-  'dagestan-summer': {
-    id: 'dagestan-summer',
+  {
+    id: 'gas-summer',
     title: 'Дагестанское лето: от садов до вершин',
-    price: 5500,
-    departure: '07:30',
-    returnTime: '20:00',
-    subtitle: 'Сады, водопад и Царская поляна',
-    program: [
-      'Проезд через Гимринский тоннель и оборонительную башню',
-      'Остановка у Ирганайского водохранилища',
-      'Посещение фруктовых садов в Гунибе (дегустация абрикосов)',
-      'Экскурсия в подземный Салтинский водопад',
-      'Прогулка по природному парку «Верхний Гуниб» (Царская поляна)',
-      'Визит в историко-краеведческий музей'
-    ]
+    description: 'Сады, водопад и Царская поляна',
+    tags: ['gastronomy'],
+    duration: '1 день',
+    difficulty: 'Легкий'
   }
+];
+
+
+const ADVENTURE_TOURS_DATA: Record<string, any> = {
+  'adv-day-1': { id: 'adv-day-1', title: 'Джиппинг, Нохьо и Сулак', basePrice: 5500, program: ['Трансфер до Сулакского каньона', 'Посещение пещеры Нохьо и Виа Феррата', 'Прогулка на катерах по бирюзовой воде', 'Обед в ресторане «Главрыба»', 'Экскурсия на бархан Сарыкум'] },
+  'adv-day-2': { id: 'adv-day-2', title: 'Рафтинг, Гоор и Карадах', basePrice: 5500, program: ['Трансфер к реке Аварское Койсу', 'Инструктаж и подготовка снаряжения', 'Сплав по горной реке', 'Посещение теснины Гоор', 'Обед на природе'] },
+  'adv-day-3': { id: 'adv-day-3', title: 'Хунзах, Лошади и Тарзанка', basePrice: 5500, program: ['Трансфер на Хунзахское плато', 'Конная прогулка по плато', 'Зиплайн в Матласе', 'Прыжок с тарзанки у водопада Тобот', 'Обед в горном кафе'] },
+  'adv-day-4': { id: 'adv-day-4', title: 'Багги, Хучни и Лунь', basePrice: 5500, program: ['Трансфер в Дербентский район', 'Заезд на багги по бездорожью', 'Посещение водопада в Хучни', 'Осмотр экраноплана «Лунь»', 'Обед у Каспия'] },
+  'adv-day-5': { id: 'adv-day-5', title: 'Избербаш Параплан', basePrice: 5500, program: ['Трансфер на гору Пушкин-Тау', 'Подготовка параплана и инструктаж', 'Тандемный полет над морем', 'Фотосессия на вершине', 'Обед в Избербаше'] },
+  'adventure-full-5days': { id: 'adventure-full-5days', title: 'ЭКСТРИМ-МАРАФОН (5 дней)', basePrice: 25000, program: ['День 1: Сулак и Нохьо', 'День 2: Рафтинг и Гоор', 'День 3: Хунзах и Тарзанка', 'День 4: Багги и Лунь', 'День 5: Параплан в Избербаше', 'Проживание и трансферы включены'] },
+  'gas-gerey': { id: 'gas-gerey', title: 'Семейная винодельня «Герей-Тюз»', basePrice: 5500, program: ['Трансфер на виноградники «Герей-Тюз»', 'Экскурсия по винодельне и дегустация', 'Посещение Крепости семи братьев', 'Национальный обед', 'Мастер-класс по приготовлению чуду', 'Прогулка к Ханагскому водопаду и мосту Зюртинг'] },
+  'gas-summer': { id: 'gas-summer', title: 'Дагестанское лето: от садов до вершин', basePrice: 5500, program: ['Проезд через Гимринский тоннель', 'Осмотр Гимринской башни и водохранилища', 'Посещение абрикосовых садов Гуниба', 'Салтинский подземный водопад', 'Прогулка по парку «Верхний Гуниб»', 'Визит в историко-краеведческий музей'] }
+,
+  
+
+};
+
+
+// Компонент карточки тура (только для Приключений)
+const TourCard = ({ route, onClick }: { route: any; onClick: () => void }) => {
+  if (!route) return null;
+  const cleanTitle = route.title.replace(/^День \d+:\s*/, '');
+  return (
+    <div 
+      style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
+      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#064e3b'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
+      onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
+      onClick={onClick}
+    >
+      <div style={{ width: '40px', height: '40px', background: '#064e3b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
+      <div style={{ flex: 1 }}>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>{cleanTitle}</h3>
+        <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>{route.description}</p>
+      </div>
+      <div style={{ color: '#9ca3af', fontSize: '1.2rem' }}>→</div>
+    </div>
+  );
 };
 
 export default function GuidePage() {
-  const [selectedTour, setSelectedTour] = useState<TourData | null>(null);
-  const [participants, setParticipants] = useState<number>(1);
-  const [date, setDate] = useState<string>('2026-08-16');
-  const [name, setName] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const router = useRouter();
+  const [selectedTour, setSelectedTour] = useState<any>(null);
+  
+  // Читаем раздел из URL (?section=...) или ставим "adventures" по умолчанию
+  const sectionId = (router.query.section as string) || 'adventures';
+  
+  const BackButton = () => (
+    <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '0.9rem', padding: '0', marginBottom: '20px' }}>
+      ← Назад
+    </button>
+  );
 
-  const handleOpenModal = (tour: TourData) => {
-    setSelectedTour(tour);
-    setParticipants(1);
-    setIsSuccess(false);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedTour(null);
-  };
-
-  const handleBooking = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedTour) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch('/api/sendBooking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tourTitle: selectedTour.title,
-          name,
-          phone,
-          date,
-          participants,
-          totalPrice: selectedTour.price * participants
-        })
-      });
-
-      if (response.ok) {
-        setIsSuccess(true);
-      } else {
-        setIsSuccess(true);
-      }
-    } catch (error) {
-      setIsSuccess(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-white text-gray-900 px-4 py-8 max-w-4xl mx-auto font-sans">
-      <Link href="/" className="text-gray-500 hover:text-gray-700 mb-6 inline-block font-medium">
-        ← Назад
-      </Link>
-
-      <h1 className="text-3xl font-bold mb-8">Гастротуры по Дагестану</h1>
-
-      {/* Маршрут 1: Герей-Тюз */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-2">Семейная винодельня «Герей-Тюз»</h2>
-        <p className="text-gray-600 mb-4 font-medium">
-          Погружение в мир виноградарства, дегустация и история Дербентского района.
-        </p>
-        <p className="text-gray-700 mb-4 leading-relaxed">
-          Вас ждет увлекательное путешествие на родину дагестанского вина. Вы посетите виноградники
-          «Герей-Тюз», где узнаете о сортах Молдова, Мускат Италия и Саперави, а также увидите процесс
-          ручного сбора урожая. Маршрут включает посещение легендарной Крепости семи братьев,
-          национальный обед и мастер-класс по приготовлению чуду. Завершит день прогулка к Ханадскому
-          водопаду и осмотр древнего арочного моста Зюртинг.
-        </p>
-        <p className="text-sm text-gray-500 mb-4">
-          <span className="font-semibold text-gray-700">Ключевые места:</span> Винодельня «Герей-Тюз», Крепость семи братьев, Ханадский водопад, Мост Зюртинг
-        </p>
-
-        <button
-          onClick={() => handleOpenModal(GASTRO_TOURS['gerey-tyuz'])}
-          className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl border border-gray-200 transition-all text-left group"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#01472a] flex items-center justify-center text-white text-lg font-bold">
-              🍷
-            </div>
-            <div>
-              <div className="font-bold text-gray-900 group-hover:text-[#01472a] transition-colors">
-                Семейная винодельня «Герей-Тюз»
-              </div>
-              <div className="text-sm text-gray-500">Вино, крепость и мастер-классы</div>
-            </div>
-          </div>
-          <span className="text-gray-400 group-hover:text-gray-700 text-xl font-bold">→</span>
-        </button>
-      </section>
-
-      {/* Маршрут 2: Дагестанское лето */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-2">Дагестанское лето: от садов до вершин</h2>
-        <p className="text-gray-600 mb-4 font-medium">
-          Гимринский перевал, подземный водопад и абрикосовые сады Гуниба.
-        </p>
-        <p className="text-gray-700 mb-4 leading-relaxed">
-          Этот маршрут раскрывает природное разнообразие горного Дагестана. Вы проедете через
-          Гимринский тоннель, увидите оборонительную башню и Ирганайское водохранилище. Главная
-          изюминка — посещение фруктовых садов в Гунибе, где летом можно попробовать сладчайшие
-          абрикосы сортов «Шалах» и «Краснощёкий». Программа также включает единственный в Дагестане
-          подземный Салтинский водопад, прогулку по природному парку «Верхний Гуниб» (Царская поляна) и
-          визит в историко-краеведческий музей.
-        </p>
-        <p className="text-sm text-gray-500 mb-4">
-          <span className="font-semibold text-gray-700">Ключевые места:</span> Гимринский тоннель, Салтинский водопад, Абрикосовые сады Гуниба, Природный парк «Верхний Гуниб»
-        </p>
-
-        <button
-          onClick={() => handleOpenModal(GASTRO_TOURS['dagestan-summer'])}
-          className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl border border-gray-200 transition-all text-left group"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#01472a] flex items-center justify-center text-white text-lg font-bold">
-              🍑
-            </div>
-            <div>
-              <div className="font-bold text-gray-900 group-hover:text-[#01472a] transition-colors">
-                Дагестанское лето: от садов до вершин
-              </div>
-              <div className="text-sm text-gray-500">Сады, водопад и Царская поляна</div>
-            </div>
-          </div>
-          <span className="text-gray-400 group-hover:text-gray-700 text-xl font-bold">→</span>
-        </button>
-      </section>
-
-      {/* Модальное окно бронирования */}
-      {selectedTour && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 text-2xl font-bold"
-            >
-              ✕
-            </button>
-
-            {isSuccess ? (
-              <div className="py-12 text-center">
-                <div className="text-5xl mb-4">🎯</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Заявка отправлена!</h3>
-                <p className="text-gray-600 mb-6">Мы свяжемся с вами в ближайшее время для подтверждения бронирования.</p>
-                <button
-                  onClick={handleCloseModal}
-                  className="w-full py-3 bg-[#01472a] text-white rounded-xl font-medium hover:opacity-90 transition-opacity"
-                >
-                  Отлично
-                </button>
-              </div>
-            ) : (
-              <>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1 pr-6">{selectedTour.title}</h3>
-                <div className="text-xs text-gray-500 mb-6 flex items-center gap-2">
-                  <span>🕒 Выезд: {selectedTour.departure}</span>
-                  <span>|</span>
-                  <span>🏁 Возврат: {selectedTour.returnTime}</span>
-                </div>
-
-                <div className="mb-6">
-                  <h4 className="font-bold text-sm text-gray-900 mb-2">Программа дня:</h4>
-                  <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                    {selectedTour.program.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <form onSubmit={handleBooking} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">Выберите дату:</label>
-                    <input
-                      type="date"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      required
-                      className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#01472a] text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">Количество участников:</label>
-                    <div className="flex items-center gap-4">
-                      <button
-                        type="button"
-                        onClick={() => setParticipants(Math.max(1, participants - 1))}
-                        className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center font-bold text-lg hover:bg-gray-100"
-                      >
-                        -
-                      </button>
-                      <span className="font-bold text-lg">{participants}</span>
-                      <button
-                        type="button"
-                        onClick={() => setParticipants(participants + 1)}
-                        className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center font-bold text-lg hover:bg-gray-100"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-[#01472a]/10 rounded-xl flex items-center justify-between my-2">
-                    <span className="font-bold text-[#01472a] text-sm">Итого к оплате:</span>
-                    <span className="font-extrabold text-[#01472a] text-xl">
-                      {(selectedTour.price * participants).toLocaleString()} ₽
-                    </span>
-                  </div>
-
-                  <input
-                    type="text"
-                    placeholder="Ваше имя"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#01472a] text-sm"
-                  />
-
-                  <input
-                    type="tel"
-                    placeholder="Телефон"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                    className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#01472a] text-sm"
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full py-4 bg-[#01472a] hover:opacity-90 text-white rounded-full font-bold transition-all disabled:opacity-50"
-                  >
-                    {isSubmitting ? 'Отправка...' : 'Забронировать тур'}
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+  // Общий стиль для контейнера раздела (как в Приключениях)
+  const SectionContainer = ({ children }: { children: React.ReactNode }) => (
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif', color: '#111' }}>
+      <BackButton />
+      {children}
     </div>
   );
+
+  // 1. РАЗДЕЛ ПРИКЛЮЧЕНИЯ (оставляем как есть)
+  if (sectionId === 'adventures') {
+    return (
+      <>
+        <Head><title>Приключения | EasyGo</title></Head>
+        <SectionContainer>
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Рафтинг по Аварскому Койсу</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Покори бурную горную реку! Командный сплав по маршрутам разной сложности.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сплавы по горным рекам Дагестана — это незабываемый опыт. Мы организуем туры по реке Аварское Койсу, предлагая маршруты как для новичков, так и для опытных рафтеров. Предоставляется всё необходимое оборудование и сопровождение опытных инструкторов.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: База «Остров Рафт» (Шамильский район)</p>
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-2')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-2'])} />
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Квадротуры: Свобода бездорожья</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>За рулем мощного квадроцикла по самым диким тропам. Крутые подъемы, спуски и виды, от которых захватывает дух.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Почувствуйте полный контроль над своим приключением! Мы предлагаем прогулки на квадроциклах по горным маршрутам Буйнакского района и других локаций. Выбирайте тур по душе: от коротких заездов до многодневных экспедиций.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: База «На рахате» (с. Ново-Зубутли)</p>
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-4')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-4'])} />
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Полет на параплане</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Взлети над горами и морем! Тандемный полет с инструктором — самый безопасный способ ощутить свободу.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Увидеть Дагестан таким, каким его видят только птицы. Мы организуем тандем-полеты на параплане с опытными инструкторами в окрестностях Избербаша, со знаменитой горы Пушкин-Тау.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Гора Пушкин-Тау (г. Избербаш)</p>
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-5')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-5'])} />
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Зиплайн и тарзанка</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Готовы шагнуть в пропасть? Скоростной спуск по тросу или затяжной прыжок с веревкой.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Для самых смелых! Попробуйте скоростной спуск на зиплайне в Матласе или прямо над Сулакским каньоном в «Главрыбе». А если этого мало — совершите прыжок с тарзанки со 100-метровой скалы водопада Тобот.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Зиплайн: Матлас, «Главрыба»; Тарзанка: водопад Тобот</p>
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-3')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-3'])} />
+          </section>
+
+          <section style={{ marginBottom: '64px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Виа Феррата: Тропа над каньоном</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Проверь себя на прочность! Уникальный скальный маршрут со страховкой прямо над бирюзовой водой Сулака.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>«Виа феррата» — это скальная тропа, оборудованная металлическими скобами и страховочным тросом. Вам предстоит карабкаться вдоль отвесной скалы и проходить по подвесным мостам на высоте.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Развлекательный комплекс «Нохъо» (Сулакский каньон)</p>
+            <TourCard route={TOUR_ROUTES.find((r: any) => r.id === 'adv-day-1')} onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adv-day-1'])} />
+          </section>
+
+          <div style={{ marginTop: '80px', padding: '32px', borderRadius: '16px', background: '#f9fafb', borderLeft: '4px solid #ef4444' }}>
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '1.5rem', fontWeight: '800' }}> ЭКСТРИМ-МАРАФОН</h2>
+            <p style={{ margin: '0 0 16px 0', fontSize: '1.1rem', fontWeight: '600', color: '#374151' }}>5 дней абсолютного драйва</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px', color: '#4b5563' }}>Зачем выбирать что-то одно? Пройдите весь путь экстремального Дагестана за одну поездку. Мы взяли лучшие активности — от бурного рафтинга и скальных троп до полета над морем — и собрали их в идеальный маршрут. Трансфер, гиды, оборудование и эмоции включены.</p>
+            <button onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['adventure-full-5days'])} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#ef4444', color: '#fff', fontWeight: 'bold', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>[ Выбрать Экстрим-Марафон → ]</button>
+          </div>
+        </SectionContainer>
+        <BookingModal tour={selectedTour} onClose={() => setSelectedTour(null)} />
+      </>
+    );
+  }
+
+  // 2. РАЗДЕЛ КУЛЬТУРА (формат идентичен Приключениям: заголовок, лид, текст, ключевые места)
+  if (sectionId === 'culture') {
+    return (
+      <>
+        <Head><title>Культура | EasyGo</title></Head>
+        <SectionContainer>
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Кубачи: Легенды в серебре</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Посетите легендарный аул-крепость, чьи ювелирные изделия и оружие хранятся в Лувре и Эрмитаже.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Кубачи — крупнейший на Кавказе центр художественной обработки металла. Вы сможете посетить мастерские, увидеть, как рождаются шедевры, и приобрести уникальные серебряные украшения, посуду или кинжалы.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Аул Кубачи, Музей художественной обработки металла</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Унцукуль: Узоры на дереве</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Узнайте секрет уникальной унцукульской насечки металлом по дереву.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Унцукуль — родина уникального промысла. Здесь создают изделия из дерева, украшая их тончайшей орнаментальной насечкой из металла. Посетите Унцукульскую художественную фабрику, где есть музей и цеха.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Унцукульская художественная фабрика</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Ковры Дагестана</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Откройте мир дагестанских ковров ручной работы на старинных фабриках и в частных мастерских.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Дагестанский ковер — это бренд, известный во всем мире. Чтобы увидеть процесс его создания, можно посетить Межгюльскую, Ляхлинскую ковровые фабрики или частные артели Табасаранского района.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Межгюльская и Ляхлинская ковровые фабрики, Табасаранский район</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Музеи: Хранители истории</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>От сокровищ Нарын-Калы до авангарда XX века — главные музейные сокровищницы республики.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Погрузитесь в богатое прошлое Дагестана, посетив его лучшие музеи: Национальный музей РД им. А. Тахо-Годи, Музей-заповедник «Дербентская крепость Нарын-Кала», Дагестанский музей ИЗО им. П.С. Гамзатовой.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Национальный музей РД (Махачкала), Крепость Нарын-Кала (Дербент)</p>
+          </section>
+        </SectionContainer>
+      </>
+    );
+  }
+
+    // 3. РАЗДЕЛ ГАСТРОНОМИЯ (с новыми турами)
+  if (sectionId === 'gastronomy') {
+    return (
+      <>
+        <Head><title>Гастротуры | EasyGo</title></Head>
+        <SectionContainer>
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Семейная винодельня «Герей-Тюз»</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Погружение в мир виноградарства, дегустация и история Дербентского района.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Вас ждет увлекательное путешествие на родину дагестанского вина. Вы посетите виноградники «Герей-Тюз», где узнаете о сортах Молдова, Мускат Италия и Саперави, а также увидите процесс ручного сбора урожая. Маршрут включает посещение легендарной Крепости семи братьев, национальный обед и мастер-класс по приготовлению чуду. Завершит день прогулка к Ханagскому водопаду и осмотр древнего арочного моста Зюртинг.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Винодельня «Герей-Тюз», Крепость семи братьев, Ханagский водопад, Мост Зюртинг</p>
+            <div 
+      style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
+      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#064e3b'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
+      onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
+      onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['gas-gerey'])}
+    >
+      <div style={{ width: '40px', height: '40px', background: '#064e3b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
+      <div style={{ flex: 1 }}>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>Семейная винодельня «Герей-Тюз»</h3>
+        <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>Вино, крепость и мастер-классы</p>
+      </div>
+      <div style={{ color: '#9ca3af', fontSize: '1.2rem' }}>→</div>
+    </div>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Дагестанское лето: от садов до вершин</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Гимринский перевал, подземный водопад и абрикосовые сады Гуниба.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Этот маршрут раскрывает природное разнообразие горного Дагестана. Вы проедете через Гимринский тоннель, увидите оборонительную башню и Ирганайское водохранилище. Главная изюминка — посещение фруктовых садов в Гунибе, где летом можно попробовать сладчайшие абрикосы сортов «Шалах» и «Краснощёкий». Программа также включает единственный в Дагестане подземный Салтинский водопад, прогулку по природному парку «Верхний Гуниб» (Царская поляна) и визит в историко-краеведческий музей.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Гимринский тоннель, Салтинский водопад, Абрикосовые сады Гуниба, Природный парк «Верхний Гуниб»</p>
+            <div 
+      style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', marginBottom: '32px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} 
+      onMouseOver={(e: any) => { e.currentTarget.style.borderColor = '#064e3b'; e.currentTarget.style.transform = 'translateY(-2px)'; }} 
+      onMouseOut={(e: any) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.transform = 'translateY(0)'; }} 
+      onClick={() => setSelectedTour(ADVENTURE_TOURS_DATA['gas-summer'])}
+    >
+      <div style={{ width: '40px', height: '40px', background: '#064e3b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.2rem', flexShrink: 0 }}></div>
+      <div style={{ flex: 1 }}>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: '700', color: '#111' }}>Дагестанское лето: от садов до вершин</h3>
+        <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: '1.4' }}>Сады, водопад и Царская поляна</p>
+      </div>
+      <div style={{ color: '#9ca3af', fontSize: '1.2rem' }}>→</div>
+    </div>
+          </section>
+        </SectionContainer>
+      </>
+    );
+  }
+  // 4. РАЗДЕЛ ДЛЯ ВСЕЙ СЕМЬИ (формат идентичен Приключениям)
+  if (sectionId === 'family') {
+    return (
+      <>
+        <Head><title>Для всей семьи | EasyGo</title></Head>
+        <SectionContainer>
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Дербент: Путешествие на 5000 лет назад</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Прикоснитесь к стенам древнейшей цитадели России, внесенной в список ЮНЕСКО.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Дербент — это живой учебник истории. Вы посетите грандиозную крепость Нарын-Кала, увидите руины древних дворцов и храмов, прогуляетесь по старинным магалам и посетите Джума-мечеть — одну из старейших в мире.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Крепость Нарын-Кала, Старый город, Джума-мечеть</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Сулакский каньон: Чудо природы</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Посмотрите на один из глубочайших каньонов мира и прокатитесь на катере по бирюзовой реке.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сулакский каньон — визитная карточка Дагестана. Его глубина достигает 1920 метров! Мы отвезем вас на лучшие смотровые площадки у поселка Дубки, где есть кафе и знаменитые качели над обрывом.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Смотровые площадки п. Дубки, Комплекс Главрыба</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Бархан Сарыкум: Пустыня в горах</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Побывайте в настоящей пустыне, не уезжая с Кавказа! Один из крупнейших песчаных барханов Евразии.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сарыкум — это уникальное чудо природы, огромная песчаная гора высотой 262 метра. Вы сможете подняться на его вершину по специальной эко-тропе. У подножия бархана расположен небольшой музей флоры и фауны.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: Заповедник «Дагестанский», участок «Сарыкумские барханы»</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Аулы-легенды: Гамсутль и Гуниб</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Посетите «дагестанский Мачу-Пикчу» — аул-призрак Гамсутль, и исторический Гуниб.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Это путешествие в самое сердце истории гор. Сначала вы подниметесь к заброшенному аулу Гамсутль, который врос в вершину горы. А затем отправитесь в Гуниб — село с потрясающими видами, где можно посетить крепость Шамиля.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: с. Гамсутль, с. Гуниб</p>
+          </section>
+
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px' }}>Гоор и Кахиб: Страна башен</h2>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Сделайте фото на знаменитом «Языке тролля» и исследуйте руины древних оборонительных башен.</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '16px' }}>Старинные аулы Гоор и Кахиб — это место невероятной силы и красоты. Вы увидите средневековые оборонительные башни, стоящие на самом краю пропасти. В Гооре находится знаменитый скальный выступ, прозванный «Языком тролля».</p>
+            <p style={{ lineHeight: '1.6', marginBottom: '24px' }}>Ключевые места: с. Гоор, с. Старый Кахиб</p>
+          </section>
+        </SectionContainer>
+      </>
+    );
+  }
+
+  return null;
 }
