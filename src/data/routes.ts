@@ -1,72 +1,41 @@
-export interface Spot {
-  name: string;
-  coords: [number, number];
+export interface RoutePoint {
+  title: string;
+  lat: number;
+  lng: number;
+  description?: string;
 }
 
-export interface RouteDay {
+export interface DayProgram {
   day: number;
   title: string;
-  spots: Spot[];
-  activities?: string[];
+  points: RoutePoint[];
 }
 
 export interface TourRoute {
   id: string;
   title: string;
   description: string;
-  duration: string;
-  difficulty: 'Легкий' | 'Средний' | 'Сложный';
   tags: string[];
-  days: RouteDay[];
+  duration: string;
+  price: string;
+  image: string;
+  days?: DayProgram[];
+  points?: RoutePoint[];
 }
 
 export const TOUR_ROUTES: TourRoute[] = [
   {
     id: 'adv-day-1',
-    title: 'Джиппинг, Нохьо и Сулак',
-    description: 'Сулакский каньон, пещера Нохьо, виа феррата и бархан Сарыкум',
-    tags: ['adventures'],
+    title: 'Джиппинг, Нохъо и Сулак',
+    description: 'Сулакский каньон, пещера Нохъо, виа феррата и бархан Сарыкум',
+    tags: ['Экстрим', 'Природа'],
     duration: '1 день',
-    difficulty: 'Средний'
-  },
-  {
-    id: 'adv-day-2',
-    title: 'Рафтинг, Гоор и Карадах',
-    description: 'Сплав по Аварскому Койсу, Язык тролля и узкое ущелье',
-    tags: ['adventures'],
-    duration: '1 день',
-    difficulty: 'Средний'
-  },
-  {
-    id: 'adv-day-3',
-    title: 'Хунзах, Лошади и Тарзанка',
-    description: 'Хунзахское плато, конная прогулка, зиплайн и тарзанка',
-    tags: ['adventures'],
-    duration: '1 день',
-    difficulty: 'Легкий'
-  },
-  {
-    id: 'adv-day-4',
-    title: 'Багги, Хучни и Лунь',
-    description: 'Гонки по бездорожью, мощный водопад и гигантский экраноплан',
-    tags: ['adventures'],
-    duration: '1 день',
-    difficulty: 'Средний'
-  },
-  {
-    id: 'adv-day-5',
-    title: 'Избербаш Параплан',
-    description: 'Тандемный полет над морем с горы Пушкин-Тау',
-    tags: ['adventures'],
-    duration: '1 день',
-    difficulty: 'Легкий'
-  },
-  {
-    id: 'adventure-full-5days',
-    title: 'ЭКСТРИМ-МАРАФОН (5 дней)',
-    description: 'Все активности за одну поездку: рафтинг, скалы, полет и море',
-    tags: ['adventures'],
-    duration: '5 дней',
-    difficulty: 'Сложный'
+    price: '4 500 ₽',
+    image: '/images/sulak.jpg',
+    points: [
+      { title: 'Сулакский каньон', lat: 43.018, lng: 46.832, description: 'Один из самых глубоких каньонов в мире' },
+      { title: 'Пещера Нохъо', lat: 43.022, lng: 46.828, description: 'Подвесной мост и смотровая площадка' },
+      { title: 'Бархан Сарыкум', lat: 43.010, lng: 47.230, description: 'Уникальный песчаный бархан' }
+    ]
   }
 ];
