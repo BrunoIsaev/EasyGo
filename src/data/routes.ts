@@ -19,6 +19,7 @@ export interface TourRoute {
   duration: string;
   price: string;
   image: string;
+  difficulty?: string;
   days?: DayProgram[];
   points?: RoutePoint[];
 }
@@ -32,6 +33,7 @@ export const TOUR_ROUTES: TourRoute[] = [
     duration: '1 день',
     price: '4 500 ₽',
     image: '/images/sulak.jpg',
+    difficulty: 'Легкий',
     points: [
       { title: 'Сулакский каньон', lat: 43.018, lng: 46.832, description: 'Один из самых глубоких каньонов в мире' },
       { title: 'Пещера Нохъо', lat: 43.022, lng: 46.828, description: 'Подвесной мост и смотровая площадка' },
