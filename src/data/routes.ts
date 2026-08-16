@@ -2,13 +2,21 @@ export interface RoutePoint {
   title: string;
   lat: number;
   lng: number;
+  coords?: [number, number];
+  description?: string;
+}
+
+export interface Spot {
+  title?: string;
+  coords: [number, number];
   description?: string;
 }
 
 export interface DayProgram {
   day: number;
   title: string;
-  points: RoutePoint[];
+  points?: RoutePoint[];
+  spots?: Spot[];
 }
 
 export interface TourRoute {
