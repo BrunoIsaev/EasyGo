@@ -35,57 +35,11 @@ export default function RouteMap({ route, singleLocation }: RouteMapProps) {
               day.spots?.forEach((spot) => {
                 if (spot.coords) mainPoints.push(spot.coords);
               });
-              day.points?.forEach((pt) => {
-                if (pt.coords) mainPoints.push(pt.coords);
-                else if (pt.lat && pt.lng) mainPoints.push([pt.lat, pt.lng]);
-              });
+              
             });
           }
 
-          if (route?.points) {
-            route.points.forEach((pt) => {
-              if (pt.coords) mainPoints.push(pt.coords);
-              else if (pt.lat && pt.lng) mainPoints.push([pt.lat, pt.lng]);
-            });
-          }
-
-          if (singleLocation) {
-            const coords: [number, number] = [singleLocation.lat, singleLocation.lng];
-            const placemark = new (window as any).ymaps.Placemark(
-              coords,
-              { balloonContent: singleLocation.title },
-              { preset: 'islands#greenDotIcon' }
-            );
-            map.geoObjects.add(placemark);
-            map.setCenter(coords, 12);
-          } else if (mainPoints.length > 0) {
-            mainPoints.forEach((coords, idx) => {
-              const placemark = new (window as any).ymaps.Placemark(
-                coords,
-                { balloonContent: `Точка ${idx + 1}` },
-                { preset: 'islands#greenCircleDotIcon' }
-              );
-              map.geoObjects.add(placemark);
-            });
-
-            if (mainPoints.length > 1) {
-              const polyline = new (window as any).ymaps.Polyline(
-                mainPoints,
-                {},
-                { strokeColor: '#01472a', strokeWidth: 4, strokeOpacity: 0.8 }
-              );
-              map.geoObjects.add(polyline);
-            }
-
-            map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 30 });
-          }
-
-          setStatus('ready');
-        } catch (e) {
-          console.error('Yandex Maps Init Error:', e);
-          setStatus('ready');
-        }
-      });
+          );
     };
 
     if ((window as any).ymaps) {
