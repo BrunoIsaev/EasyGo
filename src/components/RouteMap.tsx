@@ -1,80 +1,66 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { TourRoute } from '../data/routes';
+import { useEffect, useRef, useState } from 'react';
+import { RouteDay } from '../data/routes';
+
+const API_KEY = '5b5b8f1e-3c3a-4f3e-8f3e-3c3a4f3e8f3e';
 
 interface RouteMapProps {
-  route?: TourRoute | null;
-  singleLocation?: { id: string; title: string; lat: number; lng: number } | null;
+  route?: {
+    id: string;
+    title: string;
+    days: RouteDay[];
+  };
+  singleLocation?: {
+    id: string;
+    name: string;
+    coords: [number, number];
+  };
 }
-
-const API_KEY = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY || 'a34a2e58-3d12-4f32-8433-2a628be9c3b8';
 
 export default function RouteMap({ route, singleLocation }: RouteMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    setStatus('loading');
 
     const initMap = () => {
-      if (!mapRef.current || !(window as any).ymaps) return;
+      if (!mapRef.current) return;
 
-      (window as any).ymaps.ready(() => {
-        try {
-          mapRef.current!.innerHTML = '';
+      const ymaps = (window as any).ymaps;
+      if (!ymaps) {
+        setStatus('error');
+        return;
+      }
 
-          const map = new (window as any).ymaps.Map(mapRef.current, {
-            center: [42.9831, 47.5047],
-            zoom: 9,
-            controls: ['zoomControl', 'fullscreenControl'],
-          });
+      ymaps.ready(() => {
+        const map = new ymaps.Map(mapRef.current, {
+          center: [42.9841, 47.5047],
+          zoom: 7,
+          controls: ['zoomControl'],
+        });
 
-          const mainPoints: [number, number][] = [];
-
-          if (route?.days) {
-            route.days.forEach((day) => {
-              day.spots?.forEach((spot) => {
-                if (spot.coords) mainPoints.push(spot.coords);
-              });
-          }
-
-          }
-
-          if (singleLocation) {
-            const coords: [number, number] = [singleLocation.lat, singleLocation.lng];
-            const placemark = new (window as any).ymaps.Placemark(
-              coords,
-              { balloonContent: singleLocation.title },
-              { preset: 'islands#greenDotIcon' }
-            );
-            map.geoObjects.add(placemark);
-            map.setCenter(coords, 12);
-          } else if (mainPoints.length > 0) {
-            mainPoints.forEach((coords, idx) => {
-              const placemark = new (window as any).ymaps.Placemark(
-                coords,
-                { balloonContent: `Точка ${idx + 1}` },
-                { preset: 'islands#greenCircleDotIcon' }
-              );
-              map.geoObjects.add(placemark);
+        if (route?.days) {
+          route.days.forEach((day) => {
+            day.spots?.forEach((spot) => {
+              if (spot.coords) {
+                new ymaps.Placemark(spot.coords, {
+                  hintContent: spot.name,
+                  balloonContent: spot.name,
+                });
+              }
             });
-
-            if (mainPoints.length > 1) {
-              const polyline = new (window as any).ymaps.Polyline(
-                mainPoints,
-                {},
-                { strokeColor: '#01472a', strokeWidth: 4, strokeOpacity: 0.8 }
-              );
-              map.geoObjects.add(polyline);
-            }
-
-            map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 30 });
-          }
-
-          setStatus('ready');
-        } catch (e) {
-          console.error('Yandex Maps Init Error:', e);
-          setStatus('ready');
+          });
         }
+
+        if (singleLocation?.coords) {
+          new ymaps.Placemark(singleLocation.coords, {
+            hintContent: singleLocation.name,
+            balloonContent: singleLocation.name,
+          });
+          map.setCenter(singleLocation.coords, 12);
+        }
+
+        setStatus('ready');
       });
     };
 
