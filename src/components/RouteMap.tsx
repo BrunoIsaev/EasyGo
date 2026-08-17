@@ -35,18 +35,8 @@ export default function RouteMap({ route, singleLocation }: RouteMapProps) {
               day.spots?.forEach((spot) => {
                 if (spot.coords) mainPoints.push(spot.coords);
               });
-              day.points?.forEach((pt) => {
-                if (pt.coords) mainPoints.push(pt.coords);
-                else if (pt.lat && pt.lng) mainPoints.push([pt.lat, pt.lng]);
-              });
-            });
           }
 
-          if (route?.points) {
-            route.points.forEach((pt) => {
-              if (pt.coords) mainPoints.push(pt.coords);
-              else if (pt.lat && pt.lng) mainPoints.push([pt.lat, pt.lng]);
-            });
           }
 
           if (singleLocation) {
