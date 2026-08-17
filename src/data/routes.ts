@@ -17,7 +17,7 @@ export interface TourRoute {
   duration: string;
   difficulty: 'Легкий' | 'Средний' | 'Сложный';
   tags: string[];
-  days: RouteDay[];
+  days?: RouteDay[];
 }
 
 export const TOUR_ROUTES: TourRoute[] = [
