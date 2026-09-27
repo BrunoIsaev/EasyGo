@@ -3,10 +3,10 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Search, Thermometer, X } from "lucide-react";
+import { ArrowRight, Search, X } from "lucide-react";
 import { TOUR_ROUTES, TourRoute } from '@/data/routes';
 import { ALL_LOCATIONS } from '@/data/locations';
-import RouteMap from './RouteMap'; // Импортируем наши маршруты
+import RouteMap from './RouteMap';
 
 const HERO_TAGS = ["Места притяжения", "Горы", "Древние аулы", "Этно-туры"] as const;
 
@@ -45,7 +45,6 @@ export function Hero() {
     return { locations: foundLocations, routes: foundRoutes };
   }, [query]);
 
-  // Закрываем поиск при клике вне области
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -59,37 +58,22 @@ export function Hero() {
 
   return (
     <section ref={sectionRef} className="relative min-h-[100dvh] min-h-screen overflow-hidden pt-24">
-      {/* Фоновая картинка */}
-      {typeof window !== "undefined" && window.matchMedia("prefers-reduced-motion").matches ? (
-        <div className="absolute inset-0 h-full w-full">
-          <Image
-            src="/Derbent.WEBP"
-            alt="Дербент – древняя крепость и панорама города"
-            fill
-            className="min-h-full min-w-full object-cover object-center"
-            priority
-            sizes="100vw"
-            quality={90}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white" />
-        </div>
-      ) : (
-        <motion.div 
-          style={{ y }}
-          className="absolute inset-0 h-full w-full"
-        >
-          <Image
-            src="/Derbent.WEBP"
-            alt="Дербент – древняя крепость и панорама города"
-            fill
-            className="min-h-full min-w-full object-cover object-center"
-            priority
-            sizes="100vw"
-            quality={90}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white" />
-        </motion.div>
-      )}
+      {/* Фоновая картинка с параллаксом */}
+      <motion.div 
+        style={{ y }}
+        className="absolute inset-0 h-full w-full"
+      >
+        <Image
+          src="/Derbent.WEBP"
+          alt="Дербент – древняя крепость и панорама города"
+          fill
+          className="min-h-full min-w-full object-cover object-center scale-110"
+          priority
+          sizes="100vw"
+          quality={90}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white" />
+      </motion.div>
 
       <div className={`relative mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20 ${isOpen && query ? "md:pb-[600px] pb-[400px]" : ""}`}>
         <motion.div
