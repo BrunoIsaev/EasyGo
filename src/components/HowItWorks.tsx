@@ -28,12 +28,12 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-white py-16 md:py-24">
+    <section id="how-it-works" className="bg-white py-20 md:py-32">
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-50px" }}
           className="mx-auto mb-12 max-w-2xl text-center md:mb-16"
         >
           <p className="text-sm font-medium uppercase tracking-widest text-emerald">
@@ -59,11 +59,20 @@ export function HowItWorks() {
             return (
               <motion.article
                 key={item.step}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="relative rounded-card border border-gray-100 bg-white p-6 shadow-soft transition-shadow hover:shadow-card md:p-8"
+                initial={{ opacity: 0, y: 32, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.5,
+                  delay: i * 0.1,
+                  ease: "easeOut"
+                }}
+                whileHover={{ 
+                  y: -6,
+                  scale: 1.02,
+                  transition: { duration: 0.3 }
+                }}
+                className="relative rounded-card border border-gray-100 bg-white p-6 shadow-soft transition-all duration-300 hover:shadow-card md:p-8"
               >
                 <div className="mb-6 flex items-start justify-between">
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald/10 text-emerald">

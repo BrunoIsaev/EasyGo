@@ -22,7 +22,7 @@ export default function Home() {
         <AfishaStrip />
         <LocationsMasonry />
 
-        <section className="bg-gray-50 py-16 md:py-24">
+        <section className="bg-gray-50 py-20 md:py-32">
           <div className="mx-auto max-w-6xl px-4 md:px-8">
             <h2 className="mb-10 text-3xl font-bold tracking-tight md:text-4xl">
               Карточки локаций

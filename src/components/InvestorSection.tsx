@@ -2,12 +2,67 @@
 
 import { motion } from "framer-motion";
 import { Building2, Heart, TrendingUp, Users } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useInView } from "framer-motion";
 
 const stats = [
   { value: "3M+", label: "жителей региона" },
-  { value: "40%", label: "рост внутреннего туризма" },
+  { value: "20%", label: "рост внутреннего туризма" },
   { value: "50+", label: "локальных партнёров" },
 ];
+
+function AnimatedCounter({ value, duration = 2 }: { value: string; duration?: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const [count, setCount] = useState(0);
+
+  const match = value.match(/^([\d.,]+)(.*)$/);
+  const target = match ? parseFloat(match[1].replace(/,/g, '')) : 0;
+  const suffix = match ? match[2] : "";
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let start = 0;
+    const end = target;
+    if (start === end) return;
+
+    const totalMiliseconds = duration * 1000;
+    const startTime = performance.now();
+
+    let animationFrameId: number;
+
+    const updateCount = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / totalMiliseconds, 1);
+      
+      // Ease out quad
+      const easeProgress = progress * (2 - progress);
+
+      const currentCount = start + (end - start) * easeProgress;
+      setCount(currentCount);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(updateCount);
+      } else {
+        setCount(end);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(updateCount);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isInView, target, duration]);
+
+  const isInteger = Number.isInteger(target);
+  const formattedCount = isInteger ? Math.round(count) : count.toFixed(1);
+
+  return (
+    <span ref={ref}>
+      {formattedCount}
+      {suffix}
+    </span>
+  );
+}
 
 const pillars = [
   {
@@ -34,7 +89,7 @@ const pillars = [
 
 export function InvestorSection() {
   return (
-    <section id="impact" className="bg-charcoal py-16 text-white md:py-24">
+    <section id="impact" className="bg-charcoal py-20 text-white md:py-32">
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -71,7 +126,7 @@ export function InvestorSection() {
               className="rounded-card border border-white/10 bg-white/5 p-6 text-center backdrop-blur-sm"
             >
               <p className="text-3xl font-bold text-emerald-light md:text-4xl">
-                {stat.value}
+                <AnimatedCounter value={stat.value} />
               </p>
               <p className="mt-2 text-sm text-white/60">{stat.label}</p>
             </motion.div>

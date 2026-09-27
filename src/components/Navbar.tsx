@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
 // Обновлённые ссылки ведут на детальный вид раздела на /guide
@@ -16,14 +17,29 @@ const links = [
 // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
 export function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 50) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  });
+
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="fixed left-0 right-0 top-0 z-50 px-4 py-4 md:px-8"
+      className="fixed left-0 right-0 top-0 z-50 px-4 py-4 md:px-8 transition-all duration-300"
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between rounded-card bg-white/80 px-5 py-3 shadow-soft backdrop-blur-xl">
+      <nav className={`mx-auto flex max-w-6xl items-center justify-between rounded-card px-5 py-3 transition-all duration-300 ${
+        isScrolled 
+          ? "bg-white/90 shadow-card backdrop-blur-xl border border-gray-200/50" 
+          : "bg-white/40 shadow-soft backdrop-blur-md border border-white/20"
+      }`}>
         <Link href="/" className="flex items-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald/10 shadow-sm">
             <Image

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Search, Thermometer, X } from "lucide-react";
 import { TOUR_ROUTES, TourRoute } from '@/data/routes';
 import { ALL_LOCATIONS } from '@/data/locations';
@@ -16,6 +16,14 @@ export function Hero() {
   const [selectedRoute, setSelectedRoute] = useState<TourRoute | null>(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
 
   const searchResults = useMemo(() => {
     if (!query) return { locations: [], routes: [] };
@@ -23,7 +31,8 @@ export function Hero() {
     
     const foundLocations = ALL_LOCATIONS.filter((loc: any) => 
       loc.name.toLowerCase().includes(q) || 
-      (loc.city && loc.city.toLowerCase().includes(q))
+      (loc.city && loc.city.toLowerCase().includes(q)) ||
+      (loc.description && loc.description.toLowerCase().includes(q))
     );
 
     const foundRoutes = TOUR_ROUTES.filter((route) => {
@@ -49,26 +58,44 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-[100dvh] min-h-screen overflow-hidden pt-24">
+    <section ref={sectionRef} className="relative min-h-[100dvh] min-h-screen overflow-hidden pt-24">
       {/* Фоновая картинка */}
-      <div className="absolute inset-0 h-full w-full">
-        <Image
-          src="/Derbent.WEBP"
-          alt="Дербент – древняя крепость и панорама города"
-          fill
-          className="min-h-full min-w-full object-cover object-center"
-          priority
-          sizes="100vw"
-          quality={90}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white" />
-      </div>
+      {typeof window !== "undefined" && window.matchMedia("prefers-reduced-motion").matches ? (
+        <div className="absolute inset-0 h-full w-full">
+          <Image
+            src="/Derbent.WEBP"
+            alt="Дербент – древняя крепость и панорама города"
+            fill
+            className="min-h-full min-w-full object-cover object-center"
+            priority
+            sizes="100vw"
+            quality={90}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white" />
+        </div>
+      ) : (
+        <motion.div 
+          style={{ y }}
+          className="absolute inset-0 h-full w-full"
+        >
+          <Image
+            src="/Derbent.WEBP"
+            alt="Дербент – древняя крепость и панорама города"
+            fill
+            className="min-h-full min-w-full object-cover object-center"
+            priority
+            sizes="100vw"
+            quality={90}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white" />
+        </motion.div>
+      )}
 
       <div className={`relative mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20 ${isOpen && query ? "md:pb-[600px] pb-[400px]" : ""}`}>
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="max-w-2xl"
         >
           <p className="mb-3 inline-flex items-center gap-2 rounded-pill bg-white/15 px-4 py-1.5 text-sm text-white/90 backdrop-blur-md">
@@ -111,7 +138,7 @@ export function Hero() {
                   <X className="h-4 w-4 text-gray-500" />
                 </button>
               )}
-
+              
               <button
                 type="button"
                 className="flex shrink-0 items-center justify-center rounded-full bg-emerald p-3 text-white transition-colors hover:bg-emerald-light"

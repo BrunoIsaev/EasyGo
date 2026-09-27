@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer id="cta" className="border-t border-gray-100 bg-white py-16">
+    <footer id="cta" className="border-t border-gray-100 bg-white py-20 md:py-24">
       <div className="mx-auto max-w-6xl px-4 text-center md:px-8">
         <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
           Начните путешествие с EasyGo

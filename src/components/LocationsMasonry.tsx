@@ -7,7 +7,7 @@ import { LOCATIONS } from "@/lib/constants";
 
 export function LocationsMasonry() {
   return (
-    <section id="locations" className="bg-white py-16 md:py-24">
+    <section id="locations" className="bg-white py-20 md:py-32">
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -28,11 +28,19 @@ export function LocationsMasonry() {
           {LOCATIONS.map((loc, i) => (
             <motion.article
               key={loc.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className={`group relative overflow-hidden rounded-card shadow-card ${loc.span} ${loc.height}`}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ 
+                duration: 0.5,
+                delay: i * 0.08,
+                ease: "easeOut"
+              }}
+              whileHover={{ 
+                y: -6,
+                transition: { duration: 0.3 }
+              }}
+              className={`group relative overflow-hidden rounded-card shadow-card transition-shadow hover:shadow-float ${loc.span} ${loc.height}`}
             >
               <Image
   src={loc.image}
